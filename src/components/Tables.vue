@@ -59,13 +59,13 @@
 <script>
 const people = [
   {
-    name: 'Data Arsip',
-    title: 'Regional Paradigm Technician',
+    name: 'Data Arsip Makan Nasi',
+    title: 'Regional Paradigm Technician Makan Nasi',
     department: 'Optimization'
    },
   {
-    name: 'Data Arsip',
-    title: 'Regional Paradigm Technician',
+    name: 'Data Arsip Makan Bakso Beranak',
+    title: 'Makan Bako Beranak Clubs',
     department: 'Optimization'
    },
 ]
