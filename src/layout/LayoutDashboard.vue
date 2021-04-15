@@ -119,7 +119,7 @@
 import { ref } from 'vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 
-const navigation = ['Dashboard', 'Team', 'Projects', 'Calendar', 'Reports']
+const navigation = ['Dashboard', 'Team', 'Projects']
 const profile = ['Your Profile', 'Settings', 'Sign out']
 
 export default {
