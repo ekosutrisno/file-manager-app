@@ -19,22 +19,31 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="person in people" :key="person.title">
+              <tr v-for="data in dataFile" :key="data.ETag">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
-                    <div class="flex-shrink-0 h-10 w-10 rounded-full group hover:bg-gray-700 inline-flex items-center justify-center">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full group hover:bg-indigo-600 inline-flex items-center justify-center">
+                        <svg v-if="onCekDataType(data.Key) == 1" xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-6 w-6 text-gray-600 group-hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                       <svg v-else-if="onCekDataType(data.Key) == 3" xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-6 w-6 text-gray-600 group-hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      <svg v-else-if="onCekDataType(data.Key) == 4" xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-6 w-6 text-gray-600 group-hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      </svg>
+                       <svg v-else xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-6 w-6 text-gray-600 group-hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                        </svg>
                     </div>
                     <div class="ml-4">
                       <div class="text-sm font-medium hover:underline cursor-pointer text-gray-900">
                         <router-link to="/u/dashboard/detail">
-                           {{ person.name }}
+                           {{ data.Key }}
                         </router-link>
                       </div>
                       <div class="text-sm text-gray-500">
-                        {{ person.title }}
+                        {{ data.LastModified }}
                       </div>
                     </div>
                   </div>
@@ -57,23 +66,44 @@
 </template>
 
 <script>
-const people = [
-  {
-    name: 'Data Arsip Makan Nasi',
-    title: 'Regional Paradigm Technician Makan Nasi',
-    department: 'Optimization'
-   },
-  {
-    name: 'Data Arsip Makan Bakso Beranak',
-    title: 'Makan Bako Beranak Clubs',
-    department: 'Optimization'
-   },
-]
+import { onMounted, reactive, toRefs } from 'vue';
+import DataDummy from '../assets/DataDummy';
 
 export default {
   setup() {
+    const state = reactive({
+      dataFile: DataDummy
+    });
+
+    const onGetData = async () =>{
+      // const response = await fetch('http://localhost:8080/files');
+      // const responseToJson = await response.json();
+      
+      // state.dataFile = responseToJson;
+      console.log("On Development!");
+    }
+
+    const onCekDataType = ( stringDataname ) => {
+      if (stringDataname.includes(".png") || stringDataname.includes(".jpg") || stringDataname.includes(".svg")) {
+        return 1;
+      }else if(stringDataname.includes(".pdf")){
+        return 2;
+      }else if(stringDataname.includes(".xls") || stringDataname.includes(".doc")){
+        return 3;
+      }else if(stringDataname.includes(".json")){
+        return 4;
+      }
+    }
+
+    onMounted(()=>{
+      if (state.dataFile.length == 0) {
+        onGetData()
+      }
+    })
+
     return {
-      people,
+      ...toRefs(state),
+      onCekDataType
     }
   },
 }
