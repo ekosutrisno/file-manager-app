@@ -39,11 +39,11 @@
                     <div class="ml-4">
                       <div class="text-sm font-medium hover:underline cursor-pointer text-gray-900">
                         <router-link to="/u/dashboard/detail">
-                           {{ data.Key }}
+                        {{data.Key}}  <!-- {{onCheckIsFolder(data.Key)[0]}} -->
                         </router-link>
                       </div>
                       <div class="text-sm text-gray-500">
-                        {{ data.LastModified }}
+                        {{ onFormatDate(data.LastModified) }}
                       </div>
                     </div>
                   </div>
@@ -66,7 +66,8 @@
 </template>
 
 <script>
-import { onMounted, reactive, toRefs } from 'vue';
+import { computed, onMounted, reactive, toRefs } from 'vue';
+import moment from 'moment';
 import DataDummy from '../assets/DataDummy';
 
 export default {
@@ -95,6 +96,20 @@ export default {
       }
     }
 
+    const onFormatDate = (date)=>{
+      return moment(date).fromNow();
+    }
+
+    const onCheckIsFolder = (string) =>{
+      var folder = string.split("/")
+      return folder;
+      
+    }
+
+    const onGroupFolder = computed(() =>{
+      return state.dataFile.filter(data =>{})
+    })
+
     onMounted(()=>{
       if (state.dataFile.length == 0) {
         onGetData()
@@ -103,7 +118,10 @@ export default {
 
     return {
       ...toRefs(state),
-      onCekDataType
+      onCekDataType,
+      onFormatDate,
+      onCheckIsFolder,
+      onGroupFolder
     }
   },
 }

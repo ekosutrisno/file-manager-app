@@ -1,5 +1,5 @@
 <template>
-  <div class="font-quicksand">
+  <div class="font-quicksand h-screen">
     <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -106,7 +106,7 @@
       </div>
     </header>
     <main>
-      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 overflow-y-auto">
         <!-- Replace with your content -->
          <router-view></router-view>
         <!-- /End replace -->
