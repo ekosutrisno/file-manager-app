@@ -1,5 +1,5 @@
 <template>
-  <div class="font-quicksand h-screen">
+  <div class="font-quicksand max-h-screen">
     <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -11,7 +11,6 @@
               <div class="ml-10 flex items-baseline space-x-4">
                 <template v-for="(item, itemIdx) in navigation" :key="item">
                   <template v-if="(itemIdx === 0)">
-                    <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                     <a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">{{ item }}</a>
                   </template>
                   <a v-else href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">{{ item }}</a>
@@ -29,7 +28,7 @@
               </button>
 
               <!-- Profile dropdown -->
-              <Menu as="div" class="ml-3 relative">
+              <Menu as="div" class="ml-3 relative z-30">
                 <div>
                   <MenuButton class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                     <span class="sr-only">Open user menu</span>
@@ -94,30 +93,37 @@
       </DisclosurePanel>
     </Disclosure>
 
-    <header class="bg-white shadow">
-      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <header class="bg-white shadow sticky z-10 top-0">
+      <div class="max-w-7xl flex items-center justify-between mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold text-gray-900">
-         <router-link to="/u/dashboard/">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-          </svg>  
-         </router-link> Local Drive
+          <router-link to="/u/dashboard/">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+            </svg>  
+          </router-link> Local Drive
         </h1>
+        <div class="text-gray-900">
+          <button @click="openModal = !openModal" class="py-2 px-4 font-semibold text-sm bg-white border inline-flex items-center rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <span>Create bucket</span>
+          </button>
+        </div>
       </div>
     </header>
-    <main>
-      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 overflow-y-auto">
+    <main class="overflow-y-auto">
+      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <!-- Replace with your content -->
          <router-view></router-view>
         <!-- /End replace -->
       </div>
     </main>
   </div>
+  <Modal :open="openModal" @close-modal=" openModal= false"/>
 </template>
 
 <script>
 import { ref } from 'vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import Modal from '../components/Modal.vue'
 
 const navigation = ['Dashboard', 'Team', 'Projects']
 const profile = ['Your Profile', 'Settings', 'Sign out']
@@ -130,15 +136,18 @@ export default {
     Menu,
     MenuButton,
     MenuItem,
-    MenuItems
+    MenuItems,
+    Modal
   },
   setup() {
-    const open = ref(false)
+    const open = ref(false);
+    const openModal = ref(false);
 
     return {
       navigation,
       profile,
       open,
+      openModal
     }
   },
 }
