@@ -9,11 +9,11 @@
             </div>
             <div class="hidden md:block">
               <div class="ml-10 flex items-baseline space-x-4">
-                <template v-for="(item, itemIdx) in navigation" :key="item">
+                <template v-for="(item, itemIdx) in navigation" :key="item.nav">
                   <template v-if="(itemIdx === 0)">
-                    <a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">{{ item }}</a>
+                    <router-link to="/u/dashboard" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">{{ item.nav }}</router-link>
                   </template>
-                  <a v-else href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">{{ item }}</a>
+                  <router-link v-else :to="item.to" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">{{ item.nav }}</router-link>
                 </template>
               </div>
             </div>
@@ -92,32 +92,14 @@
         </div>
       </DisclosurePanel>
     </Disclosure>
-
-    <header class="bg-white shadow sticky z-10 top-0">
-      <div class="max-w-7xl flex items-center justify-between mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900">
-          <router-link to="/u/dashboard/">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-            </svg>  
-          </router-link> Local Drive
-        </h1>
-        <div class="text-gray-900">
-          <button @click="openModal = !openModal" class="py-2 px-4 font-semibold text-sm bg-white border inline-flex items-center rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              <span>Create bucket</span>
-          </button>
-        </div>
-      </div>
-    </header>
     <main class="overflow-y-auto">
-      <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div class="mx-auto py-6">
         <!-- Replace with your content -->
          <router-view></router-view>
         <!-- /End replace -->
       </div>
     </main>
   </div>
-  <Modal :open="openModal" @close-modal=" openModal= false"/>
 </template>
 
 <script>
@@ -125,7 +107,8 @@ import { ref } from 'vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import Modal from '../components/Modal.vue'
 
-const navigation = ['Dashboard', 'Team', 'Projects']
+// const navigation = ['Dashboard', 'Team', 'Projects']
+const navigation = [{nav:'Dashboard', to:'/u/dashboard'}, {nav:'Team', to:'/u/dashboard/teams'}, {nav: 'Projects', to:'/u/dashboard/projects'}]
 const profile = ['Your Profile', 'Settings', 'Sign out']
 
 export default {

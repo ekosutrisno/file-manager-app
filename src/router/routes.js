@@ -2,6 +2,7 @@ import HomePage from "../views/HomePage.vue";
 import LoginPage from "../views/LoginPage.vue";
 import Home from "../views/dashboard/Home.vue";
 import Detail from "../views/dashboard/Detail.vue";
+import Team from "../views/dashboard/Team.vue";
 
 // Layouts Base Components
 import LayoutDashboard from "../layout/LayoutDashboard.vue";
@@ -31,8 +32,16 @@ const routes = [
         component: Home,
       },
       {
-        path: "/u/dashboard/detail",
+        path: "/u/dashboard/bucket/:bucketName",
         component: Detail,
+      },
+      {
+        path: "/u/dashboard/teams",
+        component: Team,
+      },
+      {
+        path: "/u/dashboard/projects",
+        component: Team,
       },
     ],
   },
