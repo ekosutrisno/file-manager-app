@@ -14,14 +14,7 @@
            Create date: {{ formatDateCreated(bucket.creationDate) }}
          </p>
       </div>
-      <div class="w-40 h-40 rounded-full bg-indigo-400 opacity-20 absolute -bottom-10 -right-12">
-         <lord-icon
-            src="https://cdn.lordicon.com//qhviklyi.json"
-            trigger="hover"
-            colors="primary:#121331,secondary:#08a88a"
-            style="width:250px;height:250px">
-         </lord-icon>
-      </div>
+      <div class="w-40 h-40 rounded-full bg-indigo-400 opacity-20 absolute -bottom-10 -right-12"></div>
    </div>
 </router-link>
 </template>

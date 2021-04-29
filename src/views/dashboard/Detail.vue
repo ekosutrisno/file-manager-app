@@ -1,7 +1,7 @@
 <template>
    <div class="sm:px-6 lg:px-8">
-      <div class="lg:px-6 pb-2 flex justify-between items-center border-b border-gray-200">
-        <router-link to="/u/dashboard" class="flex items-center space-x-1 w-32 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
+      <div class="lg:px-6 px-4 pb-2 flex justify-between items-center border-b border-gray-200">
+        <router-link to="/u/dashboard" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
          <span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
@@ -12,7 +12,7 @@
           </span>
         </router-link>
         <div class="inline-block sm:inline-flex items-center space-x-2">
-          <div class="flex items-center space-x-1 justify-center px-4 py-2 text-sm font-medium text-indigo-600 bg-white">
+          <div class="sm:flex hidden items-center space-x-1 justify-center px-4 py-2 text-sm font-medium text-indigo-600 bg-white">
             <span>Bucket: </span> 
             <span class="uppercase">
                 {{$route.params.bucketName }}
@@ -47,16 +47,42 @@
                 </div>
                 <div class="ml-4 flex-shrink-0 inline-flex space-x-2">
                   <button @click="onDownloadObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                   </button>
                   <button @click="onDeleteObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>
+                  <a href="#" download class="font-medium hidden rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </a>
                 </div>
+              </li>
+              <li class="p-4 flex items-center justify-end">
+                <button class="focus:outline-none">
+                  <label for="file-upload" class="relative cursor-pointer py-1 px-2 transition bg-indigo-100 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                      <div class="inline-flex items-center space-x-2">
+                        <span>Upload a file</span>
+                        <span>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                          </svg>
+                        </span>
+                      </div>
+                      <input 
+                        id="file-upload" 
+                        name="file-upload" 
+                        type="file" 
+                        class="sr-only"
+                        @change="changeAvatar" 
+                      />
+                    </label>
+                </button>
               </li>
             </ul>
             <ul v-else>
@@ -68,12 +94,18 @@
                   <div class="flex text-sm text-gray-600">
                     <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                       <span>Upload a file</span>
-                      <input id="file-upload" name="file-upload" type="file" class="sr-only" />
+                      <input 
+                        id="file-upload" 
+                        name="file-upload" 
+                        type="file" 
+                        class="sr-only"
+                        @change="changeAvatar" 
+                      />
                     </label>
                     <p class="pl-1">or drag and drop</p>
                   </div>
                   <p class="text-xs text-gray-500">
-                    PNG, JPG, GIF up to 10MB
+                    PNG, JPG, GIF, and File up to 10MB
                   </p>
                 </div>
               </div>
@@ -127,7 +159,6 @@ export default {
        var bucketName = route.params.bucketName;
        const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}`)
        state.objects = bucketObject.data;
-      // state.objects = data
      }
 
     /**
@@ -155,7 +186,7 @@ export default {
      */
      const onDeleteObject = async ( objectName )=>{
        var bucketName = route.params.bucketName;
-        await axios.delete(`http://localhost:9099/file/object/download?bucket=${bucketName}&object=${objectName}`)
+        await axios.delete(`http://localhost:9099/file/object/single?bucket=${bucketName}&object=${objectName}`)
         .then(() => {
           onLoadBucketObjectList();
         })
@@ -169,11 +200,35 @@ export default {
      */
      const onDownloadObject = async ( objectName )=>{
        var bucketName = route.params.bucketName;
-        await axios.get(`http://localhost:9099/file/object/single?bucket=${bucketName}&object=${objectName}`)
+       await axios.get(`http://localhost:9099/file/object/download?bucket=${bucketName}&object=${objectName}`)
         .then(() => {
           // Res Actions
         }).catch(err=> console.log(err));
      }
+
+    /**
+     * Upload Object action
+     */
+     const changeAvatar = (event) => {
+         if (event.target.files && event.target.files[0]) {
+            const fileToUpload = event.target.files[0];
+            let formData = new FormData();
+            formData.append('file', fileToUpload);
+
+            var bucketName = route.params.bucketName;
+
+            axios.post(`http://localhost:9099/file/object?bucket=${bucketName}`,
+                formData,
+                {
+                  headers: {
+                      'Content-Type': 'multipart/form-data'
+                  }
+                }).then(() => onLoadBucketObjectList() )
+                .catch(err=> console.log(err))
+         }else{
+            alert('Error when change avatar!')
+         }
+      }
 
     /**
      * Cek Data type action for handling icon
@@ -196,8 +251,6 @@ export default {
     const formatDateModified = ( date )=>{
       return  moment(date).format('lll');
     }
-
-      
       return {
         ...toRefs(state),
         openModal,
@@ -206,7 +259,8 @@ export default {
         formatDateModified,
         onDeleteBucket,
         onDeleteObject,
-        onDownloadObject
+        onDownloadObject,
+        changeAvatar
       }
    }
 }
