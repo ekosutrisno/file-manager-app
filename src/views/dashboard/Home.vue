@@ -15,9 +15,25 @@
       </div>
     </div>
   </header>
-  <div class="grid mx-auto max-w-7xl sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+  <div v-if="listFiltered.length" class="grid mx-auto max-w-7xl sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
     <BucketCard v-for="(bucket, idx) in listFiltered" :key="idx" :bucket="bucket"/>
   </div>
+  <div v-else class="bg-gray-50 p-4">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+      <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+        <span class="block">You don't have a bucket yet,</span>
+        <span class="block text-indigo-600">let's start.</span>
+      </h2>
+      <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0">
+        <div class="inline-flex rounded-md shadow">
+          <button type="button" @click="openModal = !openModal" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Get started
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <Modal 
     :open="openModal" 
     @close-modal="openModal= false" 

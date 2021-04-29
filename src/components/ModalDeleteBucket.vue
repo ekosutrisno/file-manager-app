@@ -13,19 +13,19 @@
               <div class="sm:flex sm:items-start">
                 <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </div>
                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
-                    Delete Bucket <span v-if="!isEmpty" class="text-red-600">(Bucket not empty!)</span>
+                    Delete Bucket <span v-if="!isEmpty" class="text-red-600">(Bucket is not empty!)</span>
                   </DialogTitle>
                   <div class="mt-2">
                     <p class="text-sm text-gray-500">
                       Bucket must be empty and this action cannot be undone. Type in the name of the bucket to confirm <span class="font-semibold text-indigo-800">`{{bucketNameToDelete}}`</span>
                     </p>
                   </div>
-                  <div class="mt-5">
+                  <div v-if="isEmpty" class="mt-5">
                      <form @submit.prevent="onDeleteBucket">
                         <label for="bucket-name" class="sr-only">Bucket Name</label>
                         <input id="bucket-name" v-model="bucketName" :disabled="!isEmpty" name="bucket-name" type="text" autocomplete="off" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Bucket Name" />

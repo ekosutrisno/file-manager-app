@@ -1,6 +1,6 @@
 <template>
-   <div class="sm:px-6 lg:px-8 ">
-      <div class="lg:px-6 flex justify-between items-center">
+   <div class="sm:px-6 lg:px-8">
+      <div class="lg:px-6 pb-2 flex justify-between items-center border-b border-gray-200">
         <router-link to="/u/dashboard" class="flex items-center space-x-1 w-32 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
          <span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -11,8 +11,8 @@
               Back
           </span>
         </router-link>
-        <div class="inline-flex items-center space-x-2">
-          <div class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white">
+        <div class="inline-block sm:inline-flex items-center space-x-2">
+          <div class="flex items-center space-x-1 justify-center px-4 py-2 text-sm font-medium text-indigo-600 bg-white">
             <span>Bucket: </span> 
             <span class="uppercase">
                 {{$route.params.bucketName }}
@@ -27,7 +27,7 @@
       </div>
       <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-            <ul class="border border-gray-200 rounded-md divide-y divide-gray-200">
+            <ul v-if="objects.length" class="border border-gray-200 rounded-md divide-y divide-gray-200">
               <li v-for="object in objects" :key="object.lastModified" class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                 <div class="w-0 flex-1">
                   <div class="flex items-center">
@@ -37,7 +37,7 @@
                     <svg v-else xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
-                    <span class="ml-2 flex-1 w-0 truncate">
+                    <span class="ml-2 font-semibold flex-1 w-0 truncate">
                       {{object.objectName}}
                     </span>
                   </div>
@@ -46,7 +46,7 @@
                   </div>
                 </div>
                 <div class="ml-4 flex-shrink-0 inline-flex space-x-2">
-                  <button type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
+                  <button @click="onDownloadObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
                     <svg xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
@@ -59,14 +59,33 @@
                 </div>
               </li>
             </ul>
+            <ul v-else>
+              <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                <div class="space-y-1 text-center">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <div class="flex text-sm text-gray-600">
+                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                      <span>Upload a file</span>
+                      <input id="file-upload" name="file-upload" type="file" class="sr-only" />
+                    </label>
+                    <p class="pl-1">or drag and drop</p>
+                  </div>
+                  <p class="text-xs text-gray-500">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
+                </div>
+              </div>
+            </ul>
           </dd>
         </div>
    </div>
    <ModalDeleteBucket 
-    :open="openModal" 
-    @close-modal="openModal= false" 
-    :isEmpty="checkIsEmpty"
-    :bucketNameToDelete="$route.params.bucketName"
+      :open="openModal" 
+      @close-modal="openModal= false" 
+      :isEmpty="checkIsEmpty"
+      :bucketNameToDelete="$route.params.bucketName"
    />
    
 </template>
@@ -135,13 +154,25 @@ export default {
      * @param bucketName
      */
      const onDeleteObject = async ( objectName )=>{
-       console.log("Delete Obeject Fired");
        var bucketName = route.params.bucketName;
-        await axios.delete(`http://localhost:9099/file/object/single?bucket=${bucketName}&object=${objectName}`)
-        .then(res => {
+        await axios.delete(`http://localhost:9099/file/object/download?bucket=${bucketName}&object=${objectName}`)
+        .then(() => {
           onLoadBucketObjectList();
-          console.log(res)
-        });
+        })
+        .catch(err=> console.log(err));
+     }
+
+    /**
+     * Dowonload Object action
+     * @param obejctName
+     * @param bucketName
+     */
+     const onDownloadObject = async ( objectName )=>{
+       var bucketName = route.params.bucketName;
+        await axios.get(`http://localhost:9099/file/object/single?bucket=${bucketName}&object=${objectName}`)
+        .then(() => {
+          // Res Actions
+        }).catch(err=> console.log(err));
      }
 
     /**
@@ -174,7 +205,8 @@ export default {
         onCekDataType,
         formatDateModified,
         onDeleteBucket,
-        onDeleteObject
+        onDeleteObject,
+        onDownloadObject
       }
    }
 }
