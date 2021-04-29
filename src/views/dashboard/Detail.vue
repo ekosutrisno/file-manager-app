@@ -18,7 +18,7 @@
                 {{$route.params.bucketName }}
             </span>
           </div>
-          <button @click="onDeleteBucket" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none">
+          <button @click="openModal = !openModal" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
@@ -51,7 +51,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                   </button>
-                  <button type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
+                  <button @click="onDeleteObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
@@ -62,42 +62,91 @@
           </dd>
         </div>
    </div>
+   <ModalDeleteBucket 
+    :open="openModal" 
+    @close-modal="openModal= false" 
+    :isEmpty="checkIsEmpty"
+    :bucketNameToDelete="$route.params.bucketName"
+   />
    
 </template>
 
 <script>
-import { onMounted, reactive, toRefs } from 'vue';
+import { computed, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios';
 import moment from 'moment';
+import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 
 const data = [{"eTag":"\"2c13a155d721d1267820d3d09d5314f4\"","objectName":"A01.png","lastModified":"2021-04-28T08:14:43.593Z","versionId":null,"size":597816,"owner":{"id":"02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4","displayName":"minio"},"storageClass":"STANDARD","userMetadata":null,"dir":false,"latest":false,"deleteMarker":false},{"eTag":"\"dde42adf45c9025cb4964511ed24736b\"","objectName":"A02.png","lastModified":"2021-04-28T08:14:43.713Z","versionId":null,"size":878855,"owner":{"id":"02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4","displayName":"minio"},"storageClass":"STANDARD","userMetadata":null,"dir":false,"latest":false,"deleteMarker":false},{"eTag":"\"692d41444f2374dd51710cee510177cf\"","objectName":"A03.jpg","lastModified":"2021-04-28T08:14:43.093Z","versionId":null,"size":57023,"owner":{"id":"02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4","displayName":"minio"},"storageClass":"STANDARD","userMetadata":null,"dir":false,"latest":false,"deleteMarker":false},{"eTag":"\"2a995b7c7e08f343a5c17fe87cb14141\"","objectName":"application.yml","lastModified":"2021-04-28T08:07:59.173Z","versionId":null,"size":598,"owner":{"id":"02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4","displayName":"minio"},"storageClass":"STANDARD","userMetadata":null,"dir":false,"latest":false,"deleteMarker":false}]
 
 export default {
+  components:{
+    ModalDeleteBucket
+  },
    setup () {
 
      const route = useRoute();
      const router = useRouter();
+
+     const openModal = ref(false);
+     
      const state = reactive({
        objects: []
      })
 
-     const onLoadBucketObjectList = async () =>{
+     /**
+      * Check if the bucket is Empty
+      */
+
+     const checkIsEmpty = computed(()=>state.objects.length == 0)
+
+    /**
+     * Load All Bucket When Mounted
+     */
+     const onLoadBucketObjectList = async ()=>{
        var bucketName = route.params.bucketName;
-      //  const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}`)
-      //  state.objects = bucketObject.data;
-      state.objects = data
+       const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}`)
+       state.objects = bucketObject.data;
+      // state.objects = data
      }
 
-     const onDeleteBucket = async () =>{
+    /**
+     * All Mounted actions
+     */
+     onMounted(()=>onLoadBucketObjectList());
+
+
+    /**
+     * Delete Bucket action
+     * @param bucketName
+     */
+     const onDeleteBucket = async ()=>{
         var bucketName = route.params.bucketName;
         await axios.delete(`http://localhost:9099/file/bucket/${bucketName}`)
+        .then(() => {
+          router.push('/u/dashboard');
+        });
+     }
+
+    /**
+     * Delete Object action
+     * @param obejctName
+     * @param bucketName
+     */
+     const onDeleteObject = async ( objectName )=>{
+       console.log("Delete Obeject Fired");
+       var bucketName = route.params.bucketName;
+        await axios.delete(`http://localhost:9099/file/object/single?bucket=${bucketName}&object=${objectName}`)
         .then(res => {
-          router.push('/u/dashboard')
+          onLoadBucketObjectList();
           console.log(res)
         });
      }
 
+    /**
+     * Cek Data type action for handling icon
+     */
      const onCekDataType = ( stringDataname ) => {
       if (stringDataname.includes(".png") || stringDataname.includes(".jpg") || stringDataname.includes(".svg")) {
         return 1;
@@ -110,18 +159,22 @@ export default {
       }
     }
 
+    /**
+     * Format date action using momen with format 'Apr 28, 2021 4:00 PM'
+     */
     const formatDateModified = ( date )=>{
       return  moment(date).format('lll');
     }
 
-     onMounted(()=>onLoadBucketObjectList());
       
-
       return {
         ...toRefs(state),
+        openModal,
+        checkIsEmpty,
         onCekDataType,
         formatDateModified,
-        onDeleteBucket
+        onDeleteBucket,
+        onDeleteObject
       }
    }
 }

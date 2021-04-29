@@ -64,10 +64,9 @@
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           <template v-for="(item, itemIdx) in navigation" :key="item">
             <template v-if="(itemIdx === 0)">
-              <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium">{{ item }}</a>
+              <router-link to="/u/dashboard" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium">{{ item.nav }}</router-link>
             </template>
-            <a v-else href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">{{ item }}</a>
+            <router-link v-else :to="item.to" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">{{ item.nav }}</router-link>
           </template>
         </div>
         <div class="pt-4 pb-3 border-t border-gray-700">
