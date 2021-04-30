@@ -2,14 +2,14 @@
    <div class="sm:px-6 lg:px-8">
       <div class="lg:px-6 px-4 pb-2 flex justify-between items-center border-b border-gray-200">
         <router-link to="/u/dashboard" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
-         <span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-            </svg>
-         </span>
           <span>
               Back
           </span>
+         <span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+         </span>
         </router-link>
         <div class="inline-block sm:inline-flex items-center space-x-2">
           <div class="sm:flex hidden items-center space-x-1 justify-center px-4 py-2 text-sm font-medium text-indigo-600 bg-white">
@@ -27,6 +27,11 @@
       </div>
       <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+            </svg>
+            </button>
             <ul v-if="objects.length" class="border border-gray-200 rounded-md divide-y divide-gray-200">
               <li v-for="object in objects" :key="object.lastModified" class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                 <div class="w-0 flex-1">
@@ -34,15 +39,21 @@
                     <svg v-if="onCekDataType(object.objectName) == 1" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
+                    <svg v-if="object.dir" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                    </svg>
                     <svg v-else xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
-                    <span class="ml-2 font-semibold flex-1 w-0 truncate">
+                    <p @click="onLoadBucketObjectListPath(object.objectName)" v-if="object.dir" class="ml-2 inline w-auto focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
+                      {{object.objectName}}
+                    </p>
+                    <span v-else class="ml-2 font-semibold flex-1 w-0 truncate">
                       {{object.objectName}}
                     </span>
                   </div>
                   <div class="inline-flex items-center space-x-1 text-xs">
-                    {{ formatDateModified(object.lastModified) }}
+                    <span>{{ formatDateModified(object.lastModified) }} </span>  <span v-if="!object.dir">| {{ formatBytes(object.size) }}</span>
                   </div>
                 </div>
                 <div class="ml-4 flex-shrink-0 inline-flex space-x-2">
@@ -51,21 +62,20 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                   </button>
-                  <button @click="onDeleteObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
+                  <button @click=" object.dir ? onDeleteDir(object.objectName) : onDeleteObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>
-                  <a href="#" download class="font-medium hidden rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </a>
                 </div>
               </li>
               <li class="p-4 flex items-center justify-end">
+                <div class="mr-2">
+                  <label for="bucket-name" class="sr-only">Bucket Name</label>
+                  <input id="bucket-name" v-model="prefixPath" name="bucket-name" type="text" autocomplete="off" class="appearance-none relative block w-full px-3 py-1.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Path (prefix)" />
+                </div>
                 <button class="focus:outline-none">
-                  <label for="file-upload" class="relative cursor-pointer py-1 px-2 transition bg-indigo-100 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                  <label for="file-upload" class="relative cursor-pointer py-2 px-3 transition bg-indigo-100 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                       <div class="inline-flex items-center space-x-2">
                         <span>Upload a file</span>
                         <span>
@@ -79,7 +89,7 @@
                         name="file-upload" 
                         type="file" 
                         class="sr-only"
-                        @change="changeAvatar" 
+                        @change="onUploadObject" 
                       />
                     </label>
                 </button>
@@ -99,7 +109,7 @@
                         name="file-upload" 
                         type="file" 
                         class="sr-only"
-                        @change="changeAvatar" 
+                        @change="onUploadObject" 
                       />
                     </label>
                     <p class="pl-1">or drag and drop</p>
@@ -143,7 +153,9 @@ export default {
      const openModal = ref(false);
      
      const state = reactive({
-       objects: []
+       objects: [],
+       isRecursiveFolder: false,
+       prefixPath: '',
      })
 
      /**
@@ -156,6 +168,8 @@ export default {
      * Load All Bucket When Mounted
      */
      const onLoadBucketObjectList = async ()=>{
+       
+       state.isRecursiveFolder = false;
        var bucketName = route.params.bucketName;
        const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}`)
        state.objects = bucketObject.data;
@@ -164,7 +178,14 @@ export default {
     /**
      * All Mounted actions
      */
-     onMounted(()=>onLoadBucketObjectList());
+     onMounted(()=> onLoadBucketObjectList() );
+
+    const onLoadBucketObjectListPath = async (path) =>{
+       state.isRecursiveFolder = true;
+       var bucketName = route.params.bucketName;
+       const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}/path?path=${path}`)
+       state.objects = bucketObject.data;
+    }
 
 
     /**
@@ -188,9 +209,29 @@ export default {
        var bucketName = route.params.bucketName;
         await axios.delete(`http://localhost:9099/file/object/single?bucket=${bucketName}&object=${objectName}`)
         .then(() => {
-          onLoadBucketObjectList();
+          if(state.isRecursiveFolder)
+           onLoadBucketObjectListPath();
+          else
+           onLoadBucketObjectList();
         })
-        .catch(err=> console.log(err));
+        .catch(err => console.log(err));
+     }
+
+    /**
+     * Delete Folder action
+     * @param obejctName
+     * @param bucketName
+     */
+     const onDeleteDir = async ( prefixPath )=>{
+       var bucketName = route.params.bucketName;
+        await axios.delete(`http://localhost:9099/file/object/path?bucket=${bucketName}&path=${prefixPath}`)
+        .then(() => {
+          if(state.isRecursiveFolder)
+           onLoadBucketObjectListPath();
+          else
+           onLoadBucketObjectList();
+        })
+        .catch(err => console.log(err));
      }
 
     /**
@@ -209,7 +250,7 @@ export default {
     /**
      * Upload Object action
      */
-     const changeAvatar = (event) => {
+     const onUploadObject = (event) => {
          if (event.target.files && event.target.files[0]) {
             const fileToUpload = event.target.files[0];
             let formData = new FormData();
@@ -217,13 +258,20 @@ export default {
 
             var bucketName = route.params.bucketName;
 
-            axios.post(`http://localhost:9099/file/object?bucket=${bucketName}`,
+            let URL = state.prefixPath.trim().length > 0 
+                      ? `http://localhost:9099/file/object?bucket=${bucketName}&path=${state.prefixPath}`
+                      : `http://localhost:9099/file/object?bucket=${bucketName}`
+
+            axios.post(URL,
                 formData,
                 {
                   headers: {
                       'Content-Type': 'multipart/form-data'
                   }
-                }).then(() => onLoadBucketObjectList() )
+                }).then(() =>{ 
+                  onLoadBucketObjectList();
+                  state.prefixPath = '';
+                })
                 .catch(err=> console.log(err))
          }else{
             alert('Error when change avatar!')
@@ -251,16 +299,37 @@ export default {
     const formatDateModified = ( date )=>{
       return  moment(date).format('lll');
     }
+
+    /**
+     * Format Size file function
+     */
+    const formatBytes = (bytes, decimals = 2)=> {
+        if (bytes === 0) return '0 Bytes';
+
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+
       return {
         ...toRefs(state),
         openModal,
         checkIsEmpty,
         onCekDataType,
+        formatBytes,
         formatDateModified,
         onDeleteBucket,
         onDeleteObject,
+        onDeleteDir,
         onDownloadObject,
-        changeAvatar
+        onUploadObject, 
+        onLoadBucketObjectList,
+        onLoadBucketObjectListPath
       }
    }
 }

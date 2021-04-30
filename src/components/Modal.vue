@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { computed, reactive, ref, toRefs } from 'vue';
+import { reactive, ref, toRefs } from 'vue';
 import axios from 'axios';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 
@@ -93,7 +93,6 @@ export default {
             onSuccessCreated()
           })
           .catch(err=> console.log(err));
-          // console.log(bucketName.value);
           state.bucketName = '';
           closeModal();
        }
