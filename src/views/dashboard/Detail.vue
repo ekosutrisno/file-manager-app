@@ -33,7 +33,7 @@
             </svg>
             </button>
             <ul v-if="objects.length" class="border border-gray-200 rounded-md divide-y divide-gray-200">
-              <li v-for="object in objects" :key="object.lastModified" class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+              <li v-for="(object, idx) in objects" :key="idx" class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                 <div class="w-0 flex-1">
                   <div class="flex items-center">
                     <svg v-if="onCekDataType(object.objectName) == 1" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,7 +69,7 @@
                   </button>
                 </div>
               </li>
-              <li class="p-4 flex items-center justify-end">
+              <li class="p-4 flex flex-col sm:flex-row space-y-3 sm:space-y-0 items-center sm:justify-end">
                 <div class="mr-2">
                   <label for="bucket-name" class="sr-only">Bucket Name</label>
                   <input id="bucket-name" v-model="prefixPath" name="bucket-name" type="text" autocomplete="off" class="appearance-none relative block w-full px-3 py-1.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Path (prefix)" />
@@ -161,7 +161,6 @@ export default {
      /**
       * Check if the bucket is Empty
       */
-
      const checkIsEmpty = computed(()=>state.objects.length == 0)
 
     /**
@@ -316,21 +315,21 @@ export default {
     }
 
 
-      return {
-        ...toRefs(state),
-        openModal,
-        checkIsEmpty,
-        onCekDataType,
-        formatBytes,
-        formatDateModified,
-        onDeleteBucket,
-        onDeleteObject,
-        onDeleteDir,
-        onDownloadObject,
-        onUploadObject, 
-        onLoadBucketObjectList,
-        onLoadBucketObjectListPath
-      }
+    return {
+      ...toRefs(state),
+      openModal,
+      checkIsEmpty,
+      onCekDataType,
+      formatBytes,
+      formatDateModified,
+      onDeleteBucket,
+      onDeleteObject,
+      onDeleteDir,
+      onDownloadObject,
+      onUploadObject, 
+      onLoadBucketObjectList,
+      onLoadBucketObjectListPath
+    }
    }
 }
 </script>

@@ -4,6 +4,7 @@ import Home from "../views/dashboard/Home.vue";
 import Detail from "../views/dashboard/Detail.vue";
 import Team from "../views/dashboard/Team.vue";
 import Project from "../views/dashboard/Project.vue";
+import Profile from "../views/dashboard/Profile.vue";
 
 // Layouts Base Components
 import LayoutDashboard from "../layout/LayoutDashboard.vue";
@@ -43,6 +44,10 @@ const routes = [
       {
         path: "/u/dashboard/projects",
         component: Project,
+      },
+      {
+        path: "/u/dashboard/profile",
+        component: Profile,
       },
     ],
   },
