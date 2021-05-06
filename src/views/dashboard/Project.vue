@@ -15,37 +15,69 @@
       </div>
     </div>
   </header>
-  <div class="max-w-screen-xl mx-auto grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+  <div class="max-w-screen-xl mx-auto p-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <ProjectCard v-for="project in projects" :key="project.projectId" :project="project"/>
   </div>
 </template>
 
 <script>
-const people = [
+import ProjectCard from '../../components/ProjectCard.vue'
+
+const projects = [
   {
-    name: 'Jane Cooper',
-    title: 'Regional Paradigm Technician',
-    department: 'Optimization',
-    role: 'Admin',
-    email: 'jane.cooper@example.com',
-    image:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-  },
+    projectId: 'e8caf83b-34bf-4336-ba87-0f3a2294c2d8',
+    projectName: 'Minio Client Implementation',
+    description: 'Poject lore Descriptions Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat, eum?',
+    dueDate: new Date('2021-05-05'),
+    tags: ['minio','ui', 'erajaya'],
+    teams:[
+      {
+        id: '537b964a-7ebf-4ecd-a7c6-8d4bd3bb6bd8',
+        name: 'Eko Sutrisno',
+        role: 'Developer',
+        image:
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+      },
+      {
+        id: 'b4297d71-b0e4-4ba7-b2ca-be974e64493d',
+        name: 'Miaw Kolongkonyi',
+        role: 'UI/UX',
+        image:
+          'https://images.unsplash.com/photo-1581704906775-891dd5207444?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGJveXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+      }
+    ]
+ },
   {
-    name: 'Eko Sutrisno',
-    title: 'Tukang Makan Nasi Goreng',
-    department: 'Test Makanan',
-    role: 'Tester',
-    email: 'eko.sutrisno@example.com',
-    image:
-      'https://images.unsplash.com/photo-1581704906775-891dd5207444?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGJveXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-  },
-  // More people...
+    projectId: 'c66ee3e6-bd74-494f-b54f-58bb3d1ec703',
+    projectName: 'User Service',
+    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum et asperiores mollitia ipsam obcaecati, accusantium necessitatibus quae, quia maiores, ab non. Nam aspernatur pariatur quod! Quae quidem impedit sint nesciunt.',
+    dueDate: new Date('2021-01-11'),
+    tags: ['backend','java'],
+    teams:[
+      {
+        id: '5dd89f76-c047-4d6d-85c3-9b2de5a7130a',
+        name: 'Eko Sutrisno',
+        role: 'Developer',
+        image:
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+      },
+      {
+        id: 'e3aab9af-7ef9-480d-8a89-dc8b733a777c',
+        name: 'Miaw Kolongkonyi',
+        role: 'UI/UX',
+        image:
+          'https://images.unsplash.com/photo-1581704906775-891dd5207444?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGJveXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+      }
+    ]
+ }
 ]
 
 export default {
+  components:{ProjectCard},
   setup() {
+
     return {
-      people,
+      projects
     }
   },
 }
