@@ -104,7 +104,6 @@
 <script>
 import { ref } from 'vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import Modal from '../components/Modal.vue'
 
 // const navigation = ['Dashboard', 'Team', 'Projects']
 const navigation = [{nav:'Dashboard', to:'/u/dashboard'}, {nav:'Team', to:'/u/dashboard/teams'}, {nav: 'Projects', to:'/u/dashboard/projects'}]
@@ -118,8 +117,7 @@ export default {
     Menu,
     MenuButton,
     MenuItem,
-    MenuItems,
-    Modal
+    MenuItems
   },
   setup() {
     const open = ref(false);

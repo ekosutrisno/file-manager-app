@@ -1,5 +1,5 @@
 <template>
-   <div class="w-full h-full flex flex-col justify-between p-4 overflow-hidden relative cursor-pointer bg-gray-700 rounded-md shadow hover:shadow-xl">
+   <div class="w-full h-full flex flex-col justify-between p-3 transform transition-transform hover:scale-95 overflow-hidden relative cursor-pointer bg-gray-700 rounded-md shadow hover:shadow-xl">
       <div>
          <div class="text-white font-semibold text-lg">
             {{ project.projectName }}

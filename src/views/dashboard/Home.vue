@@ -34,7 +34,7 @@
     </div>
   </div>
 
-  <Modal 
+  <ModalCreateBucket 
     :open="openModal" 
     @close-modal="openModal= false" 
     @on-success-created="getListOfBucket"
@@ -45,12 +45,12 @@
 import { computed, onMounted, reactive, ref} from 'vue'
 import BucketCard from "../../components/BucketCard.vue"
 import axios from 'axios'
-import Modal from '../../components/Modal.vue';
+import ModalCreateBucket from '../../components/ModalCreateBucket.vue';
 
 const baseURL = 'http://localhost:9099/file';
 
 export default {
-  components: { BucketCard, Modal },
+  components: { BucketCard, ModalCreateBucket },
   setup(){
 
     

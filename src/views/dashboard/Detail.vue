@@ -27,7 +27,7 @@
       </div>
       <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-            <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none">
+            <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
             </svg>
@@ -138,8 +138,6 @@ import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios';
 import moment from 'moment';
 import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
-
-const data = [{"eTag":"\"2c13a155d721d1267820d3d09d5314f4\"","objectName":"A01.png","lastModified":"2021-04-28T08:14:43.593Z","versionId":null,"size":597816,"owner":{"id":"02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4","displayName":"minio"},"storageClass":"STANDARD","userMetadata":null,"dir":false,"latest":false,"deleteMarker":false},{"eTag":"\"dde42adf45c9025cb4964511ed24736b\"","objectName":"A02.png","lastModified":"2021-04-28T08:14:43.713Z","versionId":null,"size":878855,"owner":{"id":"02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4","displayName":"minio"},"storageClass":"STANDARD","userMetadata":null,"dir":false,"latest":false,"deleteMarker":false},{"eTag":"\"692d41444f2374dd51710cee510177cf\"","objectName":"A03.jpg","lastModified":"2021-04-28T08:14:43.093Z","versionId":null,"size":57023,"owner":{"id":"02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4","displayName":"minio"},"storageClass":"STANDARD","userMetadata":null,"dir":false,"latest":false,"deleteMarker":false},{"eTag":"\"2a995b7c7e08f343a5c17fe87cb14141\"","objectName":"application.yml","lastModified":"2021-04-28T08:07:59.173Z","versionId":null,"size":598,"owner":{"id":"02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4","displayName":"minio"},"storageClass":"STANDARD","userMetadata":null,"dir":false,"latest":false,"deleteMarker":false}]
 
 export default {
   components:{

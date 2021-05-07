@@ -1,5 +1,5 @@
 <template>
-   <div class="w-full h-full relative overflow-hidden hover:shadow-xl cursor-pointer flex flex-col items-start p-2 rounded-md bg-indigo-600 shadow text-white transform hover:translate-y-1 transition-transform">
+   <div class="w-full h-full relative overflow-hidden hover:shadow-xl cursor-pointer flex flex-col items-start p-3 rounded-md bg-indigo-900 shadow text-white transform hover:translate-y-1 transition-transform">
       <img class="w-16 h-16 rounded-full object-cover border-2 shadow" :src="team.image" :alt="team.name">
       <div class="text-gray-50">
          <p class="font-bold">{{team.name}}</p>

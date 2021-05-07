@@ -10,7 +10,7 @@
       </h1>
       <div class="text-gray-900">
         <button @click="openModal = !openModal" class="py-2 px-4 font-semibold text-sm bg-white border inline-flex items-center rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            <span>Add memeber</span>
+            <span>Add member</span>
         </button>
       </div>
     </div>
@@ -18,9 +18,16 @@
   <div class="max-w-screen-xl p-4 mx-auto grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
     <TeamCard v-for="team in people" :key="team.id" :team="team"/>
   </div>
+  <ModalAddTeam 
+   :open="openModal" 
+    @close-modal="openModal= false" 
+    @on-success-created="onSuccess"
+  />
 </template>
 
 <script>
+import { ref } from 'vue';
+import ModalAddTeam from '../../components/ModalAddTeam.vue';
 import TeamCard from '../../components/TeamCard.vue'
 const people = [
   { id:'ef20b245-6286-42cd-9974-2a1740ea1447',
@@ -44,9 +51,17 @@ const people = [
 ]
 
 export default {
-  components: { TeamCard },
+  components: { TeamCard, ModalAddTeam },
   setup() {
+
+    const openModal = ref(false);
+    const onSuccess =  ()=>{
+      console.log("Success Action");
+    }
+
     return {
+      openModal,
+      onSuccess,
       people,
     }
   },

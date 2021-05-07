@@ -18,9 +18,16 @@
   <div class="max-w-screen-xl mx-auto p-4 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
     <ProjectCard v-for="project in projects" :key="project.projectId" :project="project"/>
   </div>
+  <ModalAddProject 
+    :open="openModal" 
+    @close-modal="openModal= false" 
+    @on-success-created="onSuccess"
+  />
 </template>
 
 <script>
+import { ref } from 'vue'
+import ModalAddProject from '../../components/ModalAddProject.vue'
 import ProjectCard from '../../components/ProjectCard.vue'
 
 const projects = [
@@ -73,11 +80,17 @@ const projects = [
 ]
 
 export default {
-  components:{ProjectCard},
+  components:{ProjectCard, ModalAddProject},
   setup() {
+    const openModal = ref(false);
+    const onSuccess =  ()=>{
+      console.log("Success Action");
+    }
 
     return {
-      projects
+      projects,
+      openModal,
+      onSuccess
     }
   },
 }
