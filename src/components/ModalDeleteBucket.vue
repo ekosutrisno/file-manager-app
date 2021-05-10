@@ -90,16 +90,20 @@ export default {
      
      const bucketName = ref('');
      const confrmBucketName = computed(()=> props.bucketNameToDelete === bucketName.value);
+     
+    /**
+    * On Delete Bucket Action
+    * This action handling delete bucket with validate
+    */
      const onDeleteBucket = () => {
 
        if(props.isEmpty && confrmBucketName){
           
-         axios.delete(`${baseURL}/bucket/${bucketName.value}`)
+         axios.delete(`${baseURL}/bucket/${bucketName.value.toLowerCase()}`)
          .then(() =>{
             router.push('/u/dashboard');
          })
          .catch(err=> console.log(err));
-         // console.log(bucketName.value);
          bucketName.value = '';
          closeModal();
        }

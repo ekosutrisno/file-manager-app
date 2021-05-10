@@ -13,13 +13,12 @@
 </template>
 
 <script>
-   export default {
-      props:{
-         team:{
-            type: Object,
-            required: true,
-         }
+export default {
+   props:{
+      team:{
+         type: Object,
+         required: true,
       }
-      
    }
+}
 </script>

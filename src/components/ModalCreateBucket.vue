@@ -85,10 +85,14 @@ export default {
        bucketName: ''
      });
 
+     /**
+      * On Create Bucket Action
+      * This action handling create bucket
+      */
      const onCreateBucket = ()=>{
        if(state.bucketName.trim().length > 3){
 
-         axios.post(`${baseURL}/bucket?bucketName=${state.bucketName}`)
+         axios.post(`${baseURL}/bucket?bucketName=${state.bucketName.toLowerCase()}`)
           .then(() =>{
             onSuccessCreated()
           })

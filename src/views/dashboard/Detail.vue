@@ -267,7 +267,7 @@ export default {
             var bucketName = route.params.bucketName;
 
             let URL = state.prefixPath.trim().length > 0 
-                      ? `http://localhost:9099/file/object?bucket=${bucketName}&path=${state.prefixPath}`
+                      ? `http://localhost:9099/file/object?bucket=${bucketName}&path=${state.prefixPath.toLowerCase()}`
                       : `http://localhost:9099/file/object?bucket=${bucketName}`
 
             axios.post(URL,
