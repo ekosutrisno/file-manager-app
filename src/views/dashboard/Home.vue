@@ -15,6 +15,12 @@
       </div>
     </div>
   </header>
+  <div class="flex items-center justify-center p-4">
+      <div>
+        <label for="search-bucket" class="sr-only">Search Bucket</label>
+        <input id="search-bucket" v-model="filterBucket" name="search-bucket" type="text" autocomplete="off" required class="appearance-none relative w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Search..." />        
+      </div>
+  </div>
   <div v-if="listFiltered.length" class="grid mx-auto max-w-7xl sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
     <BucketCard v-for="(bucket, idx) in listFiltered" :key="idx" :bucket="bucket"/>
   </div>
@@ -42,7 +48,7 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive, ref} from 'vue'
+import { computed, onMounted, reactive, ref, toRefs} from 'vue'
 import BucketCard from "../../components/BucketCard.vue"
 import axios from 'axios'
 import ModalCreateBucket from '../../components/ModalCreateBucket.vue';
@@ -57,31 +63,25 @@ export default {
     const openModal = ref(false);
 
     const state = reactive({
-      buckets:[]
+      buckets: [],
+      filterBucket: ''
     })
 
     const getListOfBucket = async ()=>{
       const response = await axios.get(`${baseURL}/bucket`);
       state.buckets = response.data;
-      // state.buckets = [
-      //   {
-      //     name: 'erajaya-dev',
-      //     creationDate: new Date('2020-12-13')
-      //   },
-      //   {
-      //     name: 'erajaya-test',
-      //     creationDate: new Date('2021-12-11')
-      //   }
-      // ]
     }
 
-    const listFiltered = computed(()=>{
-      return state.buckets.filter(bucket => bucket.name.includes('erajaya'));
+    const listFiltered = computed(() => {
+      return state.buckets
+        .sort((a,b) => {return b.creationDate - a.creationDate})
+          .filter(bucket => bucket.name.includes(state.filterBucket));
     })
 
     onMounted(()=> getListOfBucket());
 
     return{
+      ...toRefs(state),
       listFiltered, 
       getListOfBucket,
       openModal

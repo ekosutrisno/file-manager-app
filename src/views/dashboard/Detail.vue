@@ -159,13 +159,12 @@ export default {
      /**
       * Check if the bucket is Empty
       */
-     const checkIsEmpty = computed(()=>state.objects.length == 0)
+     const checkIsEmpty = computed(() => state.objects.length == 0);
 
     /**
      * Load All Bucket When Mounted
      */
      const onLoadBucketObjectList = async ()=>{
-       
        state.isRecursiveFolder = false;
        var bucketName = route.params.bucketName;
        const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}`)
@@ -175,7 +174,7 @@ export default {
     /**
      * All Mounted actions
      */
-     onMounted(()=> onLoadBucketObjectList() );
+    onMounted(()=> onLoadBucketObjectList());
 
     const onLoadBucketObjectListPath = async (path) =>{
        state.isRecursiveFolder = true;
