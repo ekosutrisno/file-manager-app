@@ -16,9 +16,9 @@
     </div>
   </header>
   <div class="flex items-center justify-center p-4">
-      <div>
+      <div class="w-full md:max-w-md">
         <label for="search-bucket" class="sr-only">Search Bucket</label>
-        <input id="search-bucket" v-model="filterBucket" name="search-bucket" type="text" autocomplete="off" required class="appearance-none relative w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Search..." />        
+        <input id="search-bucket" v-model="filterBucket" name="search-bucket" type="text" autocomplete="off" required class="appearance-none relative w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Search bucket..." />        
       </div>
   </div>
   <div v-if="listFiltered.length" class="grid mx-auto max-w-7xl sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">

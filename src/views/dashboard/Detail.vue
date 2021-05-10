@@ -25,15 +25,21 @@
           </button>
         </div>
       </div>
-      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <div class="flex items-center justify-center p-4">
+            <div class="w-full md:max-w-md">
+              <label for="search-object" class="sr-only">Search Object</label>
+              <input id="search-object" v-model="filterObject" name="search-object" type="text" autocomplete="off" required class="appearance-none relative w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Search object..." />        
+            </div>
+        </div>
+      <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
             <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
             </svg>
             </button>
-            <ul v-if="objects.length" class="border border-gray-200 rounded-md divide-y divide-gray-200">
-              <li v-for="(object, idx) in objects" :key="idx" class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+            <ul v-if="dataObjectList.length" class="border border-gray-200 rounded-md divide-y divide-gray-200">
+              <li v-for="(object, idx) in dataObjectList" :key="idx" class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                 <div class="w-0 flex-1">
                   <div class="flex items-center">
                     <svg v-if="onCekDataType(object.objectName) == 1" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,6 +160,7 @@ export default {
        objects: [],
        isRecursiveFolder: false,
        prefixPath: '',
+       filterObject: ''
      })
 
      /**
@@ -170,6 +177,11 @@ export default {
        const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}`)
        state.objects = bucketObject.data;
      }
+
+     const dataObjectList = computed(()=>{
+       return state.objects
+          .filter(object => object.name.includes(state.filterBucket));
+     })
 
     /**
      * All Mounted actions
@@ -316,6 +328,7 @@ export default {
       ...toRefs(state),
       openModal,
       checkIsEmpty,
+      dataObjectList,
       onCekDataType,
       formatBytes,
       formatDateModified,
