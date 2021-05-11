@@ -31,11 +31,11 @@ import ModalAddTeam from '../../components/ModalAddTeam.vue';
 import TeamCard from '../../components/TeamCard.vue'
 const people = [
   { id:'ef20b245-6286-42cd-9974-2a1740ea1447',
-    name: 'Jane Cooper',
-    title: 'Regional Paradigm Technician',
+    name: 'Miaw Unyu',
+    title: 'UI/UX',
     department: 'Optimization',
     role: 'Admin',
-    email: 'jane.cooper@example.com',
+    email: 'miaw.unyu@example.com',
     image:
       'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
   },

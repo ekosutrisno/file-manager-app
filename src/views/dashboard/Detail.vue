@@ -180,7 +180,9 @@ export default {
 
      const dataObjectList = computed(()=>{
        return state.objects
-          .filter(object => object.name.includes(state.filterBucket));
+          .filter(object => object.objectName
+            .toLowerCase()
+            .includes(state.filterObject.toLowerCase()));
      })
 
     /**
@@ -282,7 +284,7 @@ export default {
                 })
                 .catch(err=> console.log(err))
          }else{
-            alert('Error when change avatar!')
+            alert('Error when upload File')
          }
       }
 
