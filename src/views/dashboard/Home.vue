@@ -53,7 +53,7 @@ import BucketCard from "../../components/BucketCard.vue"
 import axios from 'axios'
 import ModalCreateBucket from '../../components/ModalCreateBucket.vue';
 
-const baseURL = 'http://localhost:9099/file';
+const baseURL = 'https://microservices-development.erajaya.com:9099/file';
 
 export default {
   components: { BucketCard, ModalCreateBucket },
@@ -75,7 +75,8 @@ export default {
     const listFiltered = computed(() => {
       return state.buckets
         .sort((a,b) => {return b.creationDate - a.creationDate})
-          .filter(bucket => bucket.name.includes(state.filterBucket));
+          // .filter(bucket => bucket.name.includes(state.filterBucket));
+          .filter(bucket => bucket.name.includes('erajaya'));
     })
 
     onMounted(()=> getListOfBucket());

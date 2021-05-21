@@ -145,6 +145,8 @@ import axios from 'axios';
 import moment from 'moment';
 import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 
+const baseURL = 'https://microservices-development.erajaya.com:9099/file';
+
 export default {
   components:{
     ModalDeleteBucket
@@ -174,7 +176,7 @@ export default {
      const onLoadBucketObjectList = async ()=>{
        state.isRecursiveFolder = false;
        var bucketName = route.params.bucketName;
-       const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}`)
+       const bucketObject = await axios.get(`${baseURL}/object/${bucketName}`)
        state.objects = bucketObject.data;
      }
 
@@ -193,7 +195,7 @@ export default {
     const onLoadBucketObjectListPath = async (path) =>{
        state.isRecursiveFolder = true;
        var bucketName = route.params.bucketName;
-       const bucketObject = await axios.get(`http://localhost:9099/file/object/${bucketName}/path?path=${path}`)
+       const bucketObject = await axios.get(`${baseURL}/object/${bucketName}/path?path=${path}`)
        state.objects = bucketObject.data;
     }
 
@@ -204,7 +206,7 @@ export default {
      */
      const onDeleteBucket = async ()=>{
         var bucketName = route.params.bucketName;
-        await axios.delete(`http://localhost:9099/file/bucket/${bucketName}`)
+        await axios.delete(`${baseURL}/bucket/${bucketName}`)
         .then(() => {
           router.push('/u/dashboard');
         });
@@ -217,7 +219,7 @@ export default {
      */
      const onDeleteObject = async ( objectName )=>{
        var bucketName = route.params.bucketName;
-        await axios.delete(`http://localhost:9099/file/object/single?bucket=${bucketName}&object=${objectName}`)
+        await axios.delete(`${baseURL}/object/single?bucket=${bucketName}&object=${objectName}`)
         .then(() => {
           if(state.isRecursiveFolder)
            onLoadBucketObjectListPath();
@@ -234,7 +236,7 @@ export default {
      */
      const onDeleteDir = async ( prefixPath )=>{
        var bucketName = route.params.bucketName;
-        await axios.delete(`http://localhost:9099/file/object/path?bucket=${bucketName}&path=${prefixPath}`)
+        await axios.delete(`${baseURL}/object/path?bucket=${bucketName}&path=${prefixPath}`)
         .then(() => {
           if(state.isRecursiveFolder)
            onLoadBucketObjectListPath();
@@ -251,7 +253,7 @@ export default {
      */
      const onDownloadObject = async ( objectName )=>{
        var bucketName = route.params.bucketName;
-       await axios.get(`http://localhost:9099/file/object/download?bucket=${bucketName}&object=${objectName}`)
+       await axios.get(`${baseURL}/object/download?bucket=${bucketName}&object=${objectName}`)
         .then(() => {
           // Res Actions
         }).catch(err=> console.log(err));
@@ -269,8 +271,8 @@ export default {
             var bucketName = route.params.bucketName;
 
             let URL = state.prefixPath.trim().length > 0 
-                      ? `http://localhost:9099/file/object?bucket=${bucketName}&path=${state.prefixPath.toLowerCase()}`
-                      : `http://localhost:9099/file/object?bucket=${bucketName}`
+                      ? `${baseURL}/object?bucket=${bucketName}&path=${state.prefixPath.toLowerCase()}`
+                      : `${baseURL}/object?bucket=${bucketName}`
 
             axios.post(URL,
                 formData,
