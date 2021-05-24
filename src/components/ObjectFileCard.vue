@@ -1,6 +1,10 @@
 <template>
-<div class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-   <div class="w-0 flex-1">
+<div class="border relative overflow-hidden border-gray-200 p-4 rounded-md min-h-full items-center justify-between text-sm hover:shadow-xl">
+   <!-- Decorate -->
+   <div :class="[object.dir ? 'bg-indigo-400 opacity-30 w-28 h-28 -bottom-10 -left-12': 'bg-green-400 opacity-30 w-16 h-16 -bottom-6 -left-5']" class="rounded-full absolute"></div>
+   <p :class="[object.dir ? 'text-indigo-900': 'text-green-900']" class="absolute bottom-2 left-2 z-50 text-xs font-semibold">{{object.dir ? 'Folder' : 'File'}}</p>
+   <!-- End Decorate -->
+   <div class="">
       <div class="flex items-center">
          <svg v-if="onCekDataType(object.objectName) == 1" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -11,7 +15,7 @@
          <svg v-else xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
          </svg>
-         <p @click="$emit('on-load-bucket-object',object.objectName)" v-if="object.dir" class="ml-2 inline w-auto focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
+         <p @click="emitObjectListPath(object.objectName)" v-if="object.dir" class="ml-2 inline w-auto focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
             {{object.objectName}}
          </p>
          <span v-else class="ml-2 font-semibold flex-1 w-0 truncate">
@@ -22,7 +26,7 @@
          <span>{{ formatDateModified(object.lastModified) }} </span>  <span v-if="!object.dir">| {{ formatBytes(object.size) }}</span>
       </div>
    </div>
-   <div class="ml-4 flex-shrink-0 inline-flex space-x-2">
+   <div class="inline-flex mt-4 space-x-2 justify-end float-right">
       <button @click="onDownloadObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
          <svg xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -38,6 +42,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import moment from 'moment';
 
 const baseURL = 'https://microservices-development.erajaya.com:9099/file';
@@ -47,9 +52,31 @@ export default {
       object:{
          type: Object,
          required: true
+      },
+      bucket:{
+         type: String,
+         required: true
+      },
+      isRecursiveFolder:{
+         type: Boolean,
+         required: true
       }
    },
-   setup(){
+   setup(props, ctx){
+
+      /**
+       * Emit for Handling onloadbucket
+       */
+      const emitObjectList = (bucketName) => {
+         ctx.emit('on-load-bucket-object', bucketName);
+      }
+
+      /**
+       * Emit for Handling onloadbucket with folder
+       */
+      const emitObjectListPath = (object) => {
+         ctx.emit('on-load-bucket-object-path', object);
+      }
 
      /**
      * Delete Object action
@@ -57,13 +84,13 @@ export default {
      * @param bucketName
      */
      const onDeleteObject = async ( objectName )=>{
-       var bucketName = route.params.bucketName;
+       var bucketName = props.bucket;
         await axios.delete(`${baseURL}/object/single?bucket=${bucketName}&object=${objectName}`)
         .then(() => {
-          if(state.isRecursiveFolder)
-           onLoadBucketObjectListPath();
+          if(props.isRecursiveFolder)
+           emitObjectListPath()
           else
-           onLoadBucketObjectList();
+           emitObjectList(bucketName);
         })
         .catch(err => console.log(err));
      }
@@ -74,13 +101,13 @@ export default {
      * @param bucketName
      */
      const onDeleteDir = async ( prefixPath )=>{
-       var bucketName = route.params.bucketName;
+       var bucketName = props.bucket;
         await axios.delete(`${baseURL}/object/path?bucket=${bucketName}&path=${prefixPath}`)
         .then(() => {
-          if(state.isRecursiveFolder)
-           onLoadBucketObjectListPath();
+          if(props.isRecursiveFolder)
+           emitObjectListPath();
           else
-           onLoadBucketObjectList();
+           emitObjectList();
         })
         .catch(err => console.log(err));
      }
@@ -91,11 +118,12 @@ export default {
      * @param bucketName
      */
      const onDownloadObject = async ( objectName )=>{
-       var bucketName = route.params.bucketName;
-       await axios.get(`${baseURL}/object/download?bucket=${bucketName}&object=${objectName}`)
-        .then(() => {
-          // Res Actions
-        }).catch(err=> console.log(err));
+       var bucketName = props.bucket;
+       console.log(bucketName);
+      //  await axios.get(`${baseURL}/object/download?bucket=${bucketName}&object=${objectName}`)
+      //   .then(() => {
+      //     // Res Actions
+      //   }).catch(err=> console.log(err));
      }
 
 
@@ -138,6 +166,7 @@ export default {
 
 
       return{
+         emitObjectListPath,
          onCekDataType,
          formatBytes,
          formatDateModified,

@@ -55,22 +55,25 @@
               </label>
           </button>
         </div>
-      <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <div class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+      <div class="p-2">
+          <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
             <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
             </svg>
             </button>
-            <ul v-if="dataObjectList.length" class="border border-gray-200 rounded-md divide-y divide-gray-200">
+            <div v-if="dataObjectList.length" class="w-full p-2 sm:p-4 gap-2 grid border-t sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 overflow-y-auto max-h-[20.7rem] on-scrollbar">
               <ObjectFileCard 
                 v-for="(object, idx) in dataObjectList" 
                 :key="idx" 
                 :object="object"
-                @on-load-bucket-object="onLoadBucketObjectListPath"
+                :isRecursiveFolder="isRecursiveFolder"
+                :bucket="$route.params.bucketName"
+                @on-load-bucket-object="onLoadBucketObjectList"
+                @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
-            </ul>
-            <ul v-else>
+            </div>
+            <div v-else>
               <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                 <div class="space-y-1 text-center">
                   <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -94,7 +97,7 @@
                   </p>
                 </div>
               </div>
-            </ul>
+            </div>
           </div>
         </div>
    </div>
@@ -111,7 +114,6 @@
 import { computed, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios';
-import moment from 'moment';
 import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 import ObjectFileCard from '../../components/ObjectFileCard.vue';
 
@@ -184,53 +186,6 @@ export default {
      }
 
     /**
-     * Delete Object action
-     * @param obejctName
-     * @param bucketName
-     */
-     const onDeleteObject = async ( objectName )=>{
-       var bucketName = route.params.bucketName;
-        await axios.delete(`${baseURL}/object/single?bucket=${bucketName}&object=${objectName}`)
-        .then(() => {
-          if(state.isRecursiveFolder)
-           onLoadBucketObjectListPath();
-          else
-           onLoadBucketObjectList();
-        })
-        .catch(err => console.log(err));
-     }
-
-    /**
-     * Delete Folder action
-     * @param obejctName
-     * @param bucketName
-     */
-     const onDeleteDir = async ( prefixPath )=>{
-       var bucketName = route.params.bucketName;
-        await axios.delete(`${baseURL}/object/path?bucket=${bucketName}&path=${prefixPath}`)
-        .then(() => {
-          if(state.isRecursiveFolder)
-           onLoadBucketObjectListPath();
-          else
-           onLoadBucketObjectList();
-        })
-        .catch(err => console.log(err));
-     }
-
-    /**
-     * Dowonload Object action
-     * @param obejctName
-     * @param bucketName
-     */
-     const onDownloadObject = async ( objectName )=>{
-       var bucketName = route.params.bucketName;
-       await axios.get(`${baseURL}/object/download?bucket=${bucketName}&object=${objectName}`)
-        .then(() => {
-          // Res Actions
-        }).catch(err=> console.log(err));
-     }
-
-    /**
      * Upload Object action
      */
      const onUploadObject = (event) => {
@@ -261,56 +216,12 @@ export default {
          }
       }
 
-    /**
-     * Cek Data type action for handling icon
-     */
-     const onCekDataType = ( stringDataname ) => {
-      if (stringDataname.includes(".png") || stringDataname.includes(".jpg") || stringDataname.includes(".svg")) {
-        return 1;
-      }else if(stringDataname.includes(".pdf")){
-        return 2;
-      }else if(stringDataname.includes(".xls") || stringDataname.includes(".doc")){
-        return 3;
-      }else if(stringDataname.includes(".json")){
-        return 4;
-      }
-    }
-
-    /**
-     * Format date action using momen with format 'Apr 28, 2021 4:00 PM'
-     */
-    const formatDateModified = ( date )=>{
-      return  moment(date).format('lll');
-    }
-
-    /**
-     * Format Size file function
-     */
-    const formatBytes = (bytes, decimals = 2)=> {
-        if (bytes === 0) return '0 Bytes';
-
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    }
-
-
     return {
       ...toRefs(state),
       openModal,
       checkIsEmpty,
       dataObjectList,
-      onCekDataType,
-      formatBytes,
-      formatDateModified,
       onDeleteBucket,
-      onDeleteObject,
-      onDeleteDir,
-      onDownloadObject,
       onUploadObject, 
       onLoadBucketObjectList,
       onLoadBucketObjectListPath
