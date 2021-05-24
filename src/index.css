@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  @responsive {
+    .on-scrollbar {
+      scrollbar-width: thin; /* Firefox */
+      -ms-overflow-style: none; /* IE 10+ */
+    }
+    .on-scrollbar::-webkit-scrollbar-track {
+      box-shadow: none !important;
+      background-color: transparent !important;
+    }
+    .on-scrollbar::-webkit-scrollbar {
+      width: 8px !important;
+      background-color: rgba(229, 231, 235, 1);
+      border-radius: 4px;
+    }
+    .on-scrollbar::-webkit-scrollbar-thumb {
+      background-color: rgba(75, 85, 99, 1);
+      border-radius: 4px;
+    }
+  }
+}
