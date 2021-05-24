@@ -2,7 +2,7 @@
 <div class="border relative overflow-hidden border-gray-200 p-4 rounded-md min-h-full items-center justify-between text-sm hover:shadow-xl">
    <!-- Decorate -->
    <div :class="[object.dir ? 'bg-indigo-400 opacity-30 w-28 h-28 -bottom-10 -left-12': 'bg-green-400 opacity-30 w-16 h-16 -bottom-6 -left-5']" class="rounded-full absolute"></div>
-   <p :class="[object.dir ? 'text-indigo-900': 'text-green-900']" class="absolute bottom-2 left-2 z-50 text-xs font-semibold">{{object.dir ? 'Folder' : 'File'}}</p>
+   <p :class="[object.dir ? 'text-indigo-900': 'text-green-900']" class="absolute bottom-2 left-2 text-xs font-semibold">{{object.dir ? 'Folder' : 'File'}}</p>
    <!-- End Decorate -->
    <div class="">
       <div class="flex items-center">
