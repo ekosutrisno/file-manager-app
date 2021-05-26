@@ -1,5 +1,6 @@
 <template>
-   <div class="sm:px-6 lg:px-8">
+   <div class="sm:px-6 lg:px-8 flex flex-col h-full">
+     <div class="flex-none flex-shrink-0 h-48 border-b">
       <div class="lg:px-6 px-4 pb-2 flex justify-between items-center border-b border-gray-200">
         <router-link to="/u/dashboard" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
           <span>
@@ -55,14 +56,15 @@
               </label>
           </button>
         </div>
-      <div class="p-2">
+     </div>
+      <div class="p-2 flex-1 overflow-y-auto on-scrollbar">
           <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
             <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
             </svg>
             </button>
-            <div v-if="dataObjectList.length" class="w-full p-2 sm:p-4 gap-2 grid border-t sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 overflow-y-auto max-h-[20.7rem] on-scrollbar">
+            <div v-if="dataObjectList.length" class="w-full p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
               <ObjectFileCard 
                 v-for="(object, idx) in dataObjectList" 
                 :key="idx" 
@@ -99,7 +101,7 @@
               </div>
             </div>
           </div>
-        </div>
+      </div>
    </div>
    <ModalDeleteBucket 
       :open="openModal" 
