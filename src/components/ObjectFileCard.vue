@@ -13,10 +13,10 @@
    <!-- End Decorate -->
    <div class="">
       <div class="flex items-center">
-         <p @click="emitObjectListPath(object.objectName)" v-if="object.dir" class="ml-2 inline w-auto focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
+         <p @click="emitObjectListPath(object.objectName)" v-if="object.dir" class="inline w-auto focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
             {{object.objectName}}
          </p>
-         <span v-else class="ml-2 font-semibold flex-1 w-0 truncate">
+         <span v-else class="font-semibold flex-1 w-0 truncate">
             {{object.objectName}}
          </span>
       </div>

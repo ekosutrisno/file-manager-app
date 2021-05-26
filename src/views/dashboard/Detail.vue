@@ -75,6 +75,10 @@
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
+            <div v-else-if="dataObjectList.length == 0 && isProcess" class="flex flex-col items-center justify-center">
+              <Loader/>
+              <p>Fetching Object</p>
+            </div>
             <div v-else>
               <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                 <div class="space-y-1 text-center">
@@ -118,13 +122,15 @@ import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios';
 import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 import ObjectFileCard from '../../components/ObjectFileCard.vue';
+import Loader from '../../components/Loader.vue';
 
 const baseURL = 'https://microservices-development.erajaya.com:9099/file';
 
 export default {
   components:{
     ModalDeleteBucket,
-    ObjectFileCard
+    ObjectFileCard,
+    Loader
   },
    setup () {
 
@@ -137,7 +143,8 @@ export default {
        objects: [],
        isRecursiveFolder: false,
        prefixPath: '',
-       filterObject: ''
+       filterObject: '',
+       isProcess: false
      })
 
      /**
@@ -149,10 +156,12 @@ export default {
      * Load All Bucket When Mounted
      */
      const onLoadBucketObjectList = async ()=>{
+       state.isProcess = true;
        state.isRecursiveFolder = false;
        var bucketName = route.params.bucketName;
        const bucketObject = await axios.get(`${baseURL}/object/${bucketName}`)
        state.objects = bucketObject.data;
+       state.isProcess = false;
      }
 
      const dataObjectList = computed(()=>{
@@ -168,10 +177,12 @@ export default {
     onMounted(()=> onLoadBucketObjectList());
 
     const onLoadBucketObjectListPath = async (path) =>{
+       state.isProcess = true;
        state.isRecursiveFolder = true;
        var bucketName = route.params.bucketName;
        const bucketObject = await axios.get(`${baseURL}/object/${bucketName}/path?path=${path}`)
        state.objects = bucketObject.data;
+       state.isProcess = false;
     }
 
 

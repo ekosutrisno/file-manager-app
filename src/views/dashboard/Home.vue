@@ -28,6 +28,10 @@
     <div v-if="listFiltered.length" class="grid mx-auto max-w-7xl sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
       <BucketCard v-for="(bucket, idx) in listFiltered" :key="idx" :bucket="bucket"/>
     </div>
+    <div v-else-if="listFiltered.length == 0 && isProcess" class="flex flex-col items-center justify-center">
+      <Loader/>
+      <p>Fetching Bucket</p>
+    </div>
     <div v-else class="bg-gray-50 p-4 flex-1">
       <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
         <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
@@ -58,30 +62,33 @@ import { computed, onMounted, reactive, ref, toRefs} from 'vue'
 import BucketCard from "../../components/BucketCard.vue"
 import axios from 'axios'
 import ModalCreateBucket from '../../components/ModalCreateBucket.vue';
+import Loader from '../../components/Loader.vue';
 
 const baseURL = 'https://microservices-development.erajaya.com:9099/file';
 
 export default {
-  components: { BucketCard, ModalCreateBucket },
+  components: { BucketCard, ModalCreateBucket, Loader },
   setup(){
     
     const openModal = ref(false);
 
     const state = reactive({
       buckets: [],
-      filterBucket: ''
+      filterBucket: '',
+      isProcess: false
     })
 
-    const getListOfBucket = async ()=>{
+    const getListOfBucket = async () => {
+      state.isProcess = true;
       const response = await axios.get(`${baseURL}/bucket`);
       state.buckets = response.data;
+      state.isProcess = false;
     }
 
     const listFiltered = computed(() => {
       return state.buckets
         .sort((a,b) => {return b.creationDate - a.creationDate})
           .filter(bucket => bucket.name.includes(state.filterBucket));
-          // .filter(bucket => bucket.name.includes('erajaya'));
     })
 
     onMounted(()=> getListOfBucket());
