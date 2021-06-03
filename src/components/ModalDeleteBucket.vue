@@ -55,7 +55,7 @@ import axios from 'axios';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useRouter } from 'vue-router';
 
-const baseURL = 'https://microservices-development.erajaya.com:9099/file';
+const baseURL = 'https://shielded-hollows-85991.herokuapp.com/file';
 
 export default {
   components: {

@@ -124,7 +124,7 @@ import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 import ObjectFileCard from '../../components/ObjectFileCard.vue';
 import Loader from '../../components/Loader.vue';
 
-const baseURL = 'https://microservices-development.erajaya.com:9099/file';
+const baseURL = 'https://shielded-hollows-85991.herokuapp.com/file';
 
 export default {
   components:{
