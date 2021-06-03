@@ -54,8 +54,7 @@ import { computed, ref } from 'vue';
 import axios from 'axios';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useRouter } from 'vue-router';
-
-const baseURL = 'https://shielded-hollows-85991.herokuapp.com/file';
+import {baseURL} from '../assets/env';
 
 export default {
   components: {

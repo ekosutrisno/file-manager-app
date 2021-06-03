@@ -42,8 +42,7 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
-
-const baseURL = 'https://shielded-hollows-85991.herokuapp.com/file';
+import {baseURL} from '../assets/env';
 
 export default {
    props:{

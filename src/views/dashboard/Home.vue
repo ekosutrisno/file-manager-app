@@ -63,8 +63,8 @@ import BucketCard from "../../components/BucketCard.vue"
 import axios from 'axios'
 import ModalCreateBucket from '../../components/ModalCreateBucket.vue';
 import Loader from '../../components/Loader.vue';
+import {baseURL} from '../../assets/env';
 
-const baseURL = 'https://shielded-hollows-85991.herokuapp.com/file';
 
 export default {
   components: { BucketCard, ModalCreateBucket, Loader },

@@ -53,8 +53,7 @@
 import { reactive, toRefs } from 'vue';
 import axios from 'axios';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-
-const baseURL = 'https://shielded-hollows-85991.herokuapp.com/file';
+import {baseURL} from '../assets/env';
 
 export default {
   components: {
