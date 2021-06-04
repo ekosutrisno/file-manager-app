@@ -51,9 +51,7 @@
 
 <script>
 import { reactive, toRefs } from 'vue';
-import axios from 'axios';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import {baseURL} from '../assets/env';
 import { useStore } from 'vuex';
 
 export default {
@@ -79,10 +77,6 @@ export default {
         ctx.emit('close-modal');
      }
 
-     const onSuccessCreated = ()=>{
-       ctx.emit('on-success-created');
-     }
-     
      const state = reactive({
        bucketName: ''
      });

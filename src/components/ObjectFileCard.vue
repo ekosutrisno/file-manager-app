@@ -25,7 +25,7 @@
       </div>
    </div>
    <div class="inline-flex mt-4 space-x-2 justify-end float-right">
-      <button @click="onDownloadObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
+      <button v-if="!object.dir" @click="onDownloadObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
          <svg xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
          </svg>
@@ -174,25 +174,8 @@ export default {
          return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
       }
 
-      /**
-       * Cek Data type action for handling icon
-      */
-      const onCekDataType = ( stringDataname ) => {
-         if (stringDataname.includes(".png") || stringDataname.includes(".jpg") || stringDataname.includes(".svg")) {
-         return 1;
-         }else if(stringDataname.includes(".pdf")){
-         return 2;
-         }else if(stringDataname.includes(".xls") || stringDataname.includes(".doc")){
-         return 3;
-         }else if(stringDataname.includes(".json")){
-         return 4;
-         }
-      }
-
-
       return{
          emitObjectListPath,
-         onCekDataType,
          formatBytes,
          formatDateModified,
          onDeleteObject,

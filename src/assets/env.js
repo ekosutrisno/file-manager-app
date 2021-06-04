@@ -1,4 +1,4 @@
-const IS_DEV = true;
+const IS_DEV = false;
 const IS_PROD_ERA = false;
 
 export const baseURL = IS_DEV

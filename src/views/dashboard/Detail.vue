@@ -124,6 +124,7 @@ import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 import ObjectFileCard from '../../components/ObjectFileCard.vue';
 import Loader from '../../components/Loader.vue';
 import {baseURL} from '../../assets/env';
+import { useStore } from 'vuex';
 
 
 export default {
@@ -136,15 +137,16 @@ export default {
 
      const route = useRoute();
      const router = useRouter();
+     const store = useStore();
 
      const openModal = ref(false);
      
      const state = reactive({
-       objects: [],
-       isRecursiveFolder: false,
+       objects: computed(()=> store.state.object_module.objects),
+       isRecursiveFolder: computed(()=> store.state.object_module.isRecursiveFolder),
        prefixPath: '',
        filterObject: '',
-       isProcess: false
+       isProcess: computed(()=> store.state.object_module.isProcess),
      })
 
      /**
@@ -155,16 +157,12 @@ export default {
     /**
      * Load All Bucket When Mounted
      */
-     const onLoadBucketObjectList = async ()=>{
-       state.isProcess = true;
-       state.isRecursiveFolder = false;
+     const onLoadBucketObjectList = ()=>{
        var bucketName = route.params.bucketName;
-       const bucketObject = await axios.get(`${baseURL}/object/${bucketName}`)
-       state.objects = bucketObject.data;
-       state.isProcess = false;
+       store.dispatch("object_module/setObjectData", bucketName);
      }
 
-     const dataObjectList = computed(()=>{
+     const dataObjectList =computed(() => {
        return state.objects
           .filter(object => object.objectName
             .toLowerCase()
@@ -176,27 +174,14 @@ export default {
      */
     onMounted(()=> onLoadBucketObjectList());
 
-    const onLoadBucketObjectListPath = async (path) =>{
-       state.isProcess = true;
-       state.isRecursiveFolder = true;
-       var bucketName = route.params.bucketName;
-       const bucketObject = await axios.get(`${baseURL}/object/${bucketName}/path?path=${path}`)
-       state.objects = bucketObject.data;
-       state.isProcess = false;
+    const onLoadBucketObjectListPath = (path) =>{
+       var data = {
+          bucketName: route.params.bucketName,
+          path: path
+        }
+      store.dispatch("object_module/setObjectDataPath", data);
+
     }
-
-
-    /**
-     * Delete Bucket action
-     * @param bucketName
-     */
-     const onDeleteBucket = async ()=>{
-        var bucketName = route.params.bucketName;
-        await axios.delete(`${baseURL}/bucket/${bucketName}`)
-        .then(() => {
-          router.push('/u/dashboard');
-        });
-     }
 
     /**
      * Upload Object action
@@ -213,17 +198,15 @@ export default {
                       ? `${baseURL}/object?bucket=${bucketName}&path=${state.prefixPath.toLowerCase()}`
                       : `${baseURL}/object?bucket=${bucketName}`
 
-            axios.post(URL,
-                formData,
-                {
-                  headers: {
-                      'Content-Type': 'multipart/form-data'
-                  }
-                }).then(() =>{ 
-                  onLoadBucketObjectList();
-                  state.prefixPath = '';
-                })
-                .catch(err=> console.log(err))
+            var dataPayload = {
+              formData: formData,
+              bucketName: bucketName,
+              url: URL
+            }
+            store.dispatch("object_module/onUploadObject", dataPayload)
+              .then(()=>{
+                state.filterObject= "";
+              });
          }else{
             alert('Error when upload File')
          }
@@ -234,7 +217,6 @@ export default {
       openModal,
       checkIsEmpty,
       dataObjectList,
-      onDeleteBucket,
       onUploadObject, 
       onLoadBucketObjectList,
       onLoadBucketObjectListPath

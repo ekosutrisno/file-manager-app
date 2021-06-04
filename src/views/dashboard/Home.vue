@@ -53,7 +53,6 @@
   <ModalCreateBucket 
     :open="openModal" 
     @close-modal="openModal = false" 
-    @on-success-created="getListOfBucket"
   />
 </template>
 
@@ -98,8 +97,7 @@ export default {
 
     return{
       ...toRefs(state),
-      listFiltered, 
-      getListOfBucket,
+      listFiltered,
       openModal
     }
   },
