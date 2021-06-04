@@ -43,6 +43,7 @@
 import axios from 'axios';
 import moment from 'moment';
 import {baseURL} from '../assets/env';
+import { reactive } from 'vue';
 
 export default {
    props:{
@@ -60,6 +61,11 @@ export default {
       }
    },
    setup(props, ctx){
+
+      const state = reactive({
+         isDownloading: false,
+         isDownloadError: false
+      });
 
       /**
        * Emit for Handling onloadbucket
@@ -116,11 +122,33 @@ export default {
      */
      const onDownloadObject = async ( objectName )=>{
        var bucketName = props.bucket;
-       console.log(bucketName);
-      //  await axios.get(`${baseURL}/object/download?bucket=${bucketName}&object=${objectName}`)
-      //   .then(() => {
-      //     // Res Actions
-      //   }).catch(err=> console.log(err));
+       await axios.get(`${baseURL}/url?bucket=${bucketName}&object=${objectName}`)
+        .then((res) => {
+           try {
+              if(res.status == 200){
+               download(res.data);
+              }
+           } catch (error) {
+              console.log(error);
+           }
+        }).catch(err=> console.log(err));
+     }
+
+     const download = (object) => {
+         axios({
+               url: object.url,
+               method: 'GET',
+               responseType: 'blob',
+            }).then((response) => {
+               var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+               var fileLink = document.createElement('a');
+
+               fileLink.href = fileURL;
+               fileLink.setAttribute('download', object.name);
+               document.body.appendChild(fileLink);
+
+               fileLink.click();
+            });
      }
 
 
@@ -169,7 +197,8 @@ export default {
          formatDateModified,
          onDeleteObject,
          onDeleteDir,
-         onDownloadObject
+         onDownloadObject,
+         download
       }
    }
 }
