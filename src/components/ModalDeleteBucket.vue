@@ -51,10 +51,9 @@
 
 <script>
 import { computed, ref } from 'vue';
-import axios from 'axios';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useRouter } from 'vue-router';
-import {baseURL} from '../assets/env';
+import { useStore } from 'vuex';
 
 export default {
   components: {
@@ -82,6 +81,7 @@ export default {
   setup(props, ctx){
 
      const router = useRouter();
+     const store = useStore();
 
      const closeModal = ()=>{
         ctx.emit('close-modal');
@@ -98,13 +98,13 @@ export default {
 
        if(props.isEmpty && confrmBucketName){
           
-         axios.delete(`${baseURL}/bucket/${bucketName.value.toLowerCase()}`)
-         .then(() =>{
-            router.push('/u/dashboard');
+        store.dispatch("bucket_module/deleteBucketData", bucketName.value.toLowerCase())
+        .then(() =>{
+            // router.push('/u/dashboard');
+            router.push({ name: 'Dashboard', params: { deleteState: true } })
+            bucketName.value = '';
+            closeModal();
          })
-         .catch(err=> console.log(err));
-         bucketName.value = '';
-         closeModal();
        }
      }
 

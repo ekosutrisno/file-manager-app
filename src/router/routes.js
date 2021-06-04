@@ -31,6 +31,7 @@ const routes = [
     children: [
       {
         path: "/u/dashboard",
+        name: "Dashboard",
         component: Home,
       },
       {

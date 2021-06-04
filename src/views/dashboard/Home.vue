@@ -60,10 +60,10 @@
 <script>
 import { computed, onMounted, reactive, ref, toRefs} from 'vue'
 import BucketCard from "../../components/BucketCard.vue"
-import axios from 'axios'
 import ModalCreateBucket from '../../components/ModalCreateBucket.vue';
 import Loader from '../../components/Loader.vue';
-import {baseURL} from '../../assets/env';
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router';
 
 
 export default {
@@ -71,18 +71,17 @@ export default {
   setup(){
     
     const openModal = ref(false);
+    const store = useStore();
+    const route = useRoute();
 
     const state = reactive({
-      buckets: [],
+      buckets: computed(()=> store.state.bucket_module.buckets),
       filterBucket: '',
-      isProcess: false
+      isProcess: computed(()=> store.state.bucket_module.isProcess)
     })
 
     const getListOfBucket = async () => {
-      state.isProcess = true;
-      const response = await axios.get(`${baseURL}/bucket`);
-      state.buckets = response.data;
-      state.isProcess = false;
+     await store.dispatch('bucket_module/setBucketData');
     }
 
     const listFiltered = computed(() => {
@@ -91,7 +90,11 @@ export default {
           .filter(bucket => bucket.name.includes(state.filterBucket));
     })
 
-    onMounted(()=> getListOfBucket());
+    onMounted(()=>{
+      if(route.params.deleteState != "true")
+        getListOfBucket()
+      }
+     );
 
     return{
       ...toRefs(state),
@@ -99,6 +102,6 @@ export default {
       getListOfBucket,
       openModal
     }
-  }
+  },
 }
 </script>

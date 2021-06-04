@@ -54,6 +54,7 @@ import { reactive, toRefs } from 'vue';
 import axios from 'axios';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {baseURL} from '../assets/env';
+import { useStore } from 'vuex';
 
 export default {
   components: {
@@ -71,6 +72,8 @@ export default {
      }
   },
   setup(_, ctx){
+
+     const store = useStore();
 
      const closeModal = ()=>{
         ctx.emit('close-modal');
@@ -91,13 +94,12 @@ export default {
      const onCreateBucket = ()=>{
        if(state.bucketName.trim().length > 3){
 
-         axios.post(`${baseURL}/bucket?bucketName=${state.bucketName.toLowerCase()}`)
-          .then(() =>{
-            onSuccessCreated()
-          })
-          .catch(err=> console.log(err));
-          state.bucketName = '';
-          closeModal();
+         store.dispatch("bucket_module/createBucketData", state.bucketName.toLowerCase())
+              .then(()=>{
+                state.bucketName = '';
+                closeModal();
+              })
+              .catch(err=> console.log(err));
        }
      }
 
