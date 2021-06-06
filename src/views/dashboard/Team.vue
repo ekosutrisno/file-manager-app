@@ -29,6 +29,7 @@
 import { ref } from 'vue';
 import ModalAddTeam from '../../components/ModalAddTeam.vue';
 import TeamCard from '../../components/TeamCard.vue'
+
 const people = [
   { id:'ef20b245-6286-42cd-9974-2a1740ea1447',
     name: 'Miaw Unyu',
@@ -50,6 +51,9 @@ const people = [
   },
 ]
 
+/**
+ * @author Eko Sutrisno
+ */
 export default {
   components: { TeamCard, ModalAddTeam },
   setup() {

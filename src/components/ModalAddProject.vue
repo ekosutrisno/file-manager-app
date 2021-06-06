@@ -68,6 +68,9 @@ import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } f
 
 const baseURL = 'http://localhost:9099/file';
 
+/**
+ * @author Eko Sutrisno
+ */
 export default {
   components: {
     Dialog,

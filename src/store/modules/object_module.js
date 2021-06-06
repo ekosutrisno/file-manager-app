@@ -2,6 +2,13 @@ import { useToast } from "vue-toastification";
 import axios from "axios";
 import { baseURL } from "../../assets/env";
 
+/**
+ * @author Eko Sutrisno
+ */
+
+/**
+ * Toast Instance
+ */
 const toast = useToast();
 
 const object_module = {
@@ -16,12 +23,23 @@ const object_module = {
     };
   },
   mutations: {
-    SET_OBJECTS: (state, payload) => (state.objects = payload),
-    SET_IS_PROCESS: (state, payload) => (state.isProcess = payload),
-    SET_IS_RECURSIVE_FOLDER: (state, payload) =>
-      (state.isRecursiveFolder = payload),
+    SET_OBJECTS: (state, payload) => {
+      state.objects = payload;
+    },
+    SET_IS_PROCESS: (state, payload) => {
+      state.isProcess = payload;
+    },
+    SET_IS_RECURSIVE_FOLDER: (state, payload) => {
+      state.isRecursiveFolder = payload;
+    },
   },
   actions: {
+    /**
+     * Set Object Data
+     * @param  {} {commit
+     * @param  {} dispatch}
+     * @param  {} bucketName
+     */
     setObjectData({ commit, dispatch }, bucketName) {
       dispatch("setIsProcess", true);
       dispatch("setIsRecursiveFolder", false);
@@ -35,6 +53,12 @@ const object_module = {
         .catch((err) => console.log(err));
     },
 
+    /**
+     * Set Object Data base on the Path (Folder)
+     * @param  {} {commit
+     * @param  {} dispatch}
+     * @param  {} data
+     */
     setObjectDataPath({ commit, dispatch }, data) {
       dispatch("setIsProcess", true);
       dispatch("setIsRecursiveFolder", true);
@@ -49,6 +73,11 @@ const object_module = {
         .catch((err) => console.log(err));
     },
 
+    /**
+     * Handling Upload Object Action
+     * @param  {} {dispatch}
+     * @param  {} dataPayload
+     */
     onUploadObject({ dispatch }, dataPayload) {
       axios
         .post(dataPayload.url, dataPayload.formData, {
@@ -65,8 +94,18 @@ const object_module = {
         .catch((err) => console.log(err));
     },
 
+    /**
+     * Handling Download Object
+     * @param  {} {dispatch}
+     * @param  {} dataPayload
+     */
     onDownloadObject({ dispatch }, dataPayload) {},
 
+    /**
+     * Download Function and Method Action
+     * @param  {} {dispatch}
+     * @param  {} dataPayload
+     */
     downloadAction({ dispatch }, dataPayload) {},
 
     setIsProcess({ commit }, status) {

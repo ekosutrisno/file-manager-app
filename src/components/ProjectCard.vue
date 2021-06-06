@@ -24,6 +24,9 @@
 <script>
 import moment from 'moment';
 
+/**
+ * @author Eko Sutrisno
+ */
 export default {
    props:{
       project:{

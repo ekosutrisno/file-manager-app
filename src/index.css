@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @author Eko Sutrisno */
 @layer utilities {
   @responsive {
     .on-scrollbar {

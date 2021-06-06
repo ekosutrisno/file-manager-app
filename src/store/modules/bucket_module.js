@@ -2,6 +2,13 @@ import axios from "axios";
 import { useToast } from "vue-toastification";
 import { baseURL } from "../../assets/env";
 
+/**
+ * @author Eko Sutrisno
+ */
+
+/**
+ * Toast Instance
+ */
 const toast = useToast();
 
 const bucket_module = {
@@ -13,25 +20,39 @@ const bucket_module = {
     };
   },
   mutations: {
-    SET_BUCKETS: (state, payload) => (state.buckets = payload),
-    SET_IS_PROCESS: (state, payload) => (state.isProcess = payload),
+    SET_BUCKETS: (state, payload) => {
+      state.buckets = payload;
+    },
+    SET_IS_PROCESS: (state, payload) => {
+      state.isProcess = payload;
+    },
   },
   actions: {
+    /**
+     * Set Bucket Data [Get All Bucket]
+     * @param  {} {commit
+     * @param  {} dispatch}
+     */
     setBucketData({ commit, dispatch }) {
-      dispatch("setIsProcessStatus", true); // Loading On
+      dispatch("setIsProcessStatus", true);
 
       axios
         .get(`${baseURL}/bucket`)
         .then((res) => {
           commit("SET_BUCKETS", res.data);
-          dispatch("setIsProcessStatus", false); // Loading Off
+          dispatch("setIsProcessStatus", false);
         })
         .catch((err) => {
           console.log(err);
-          dispatch("setIsProcessStatus", false); // Loading Off
+          dispatch("setIsProcessStatus", false);
         });
     },
 
+    /**
+     * Create Bucket
+     * @param  {} {dispatch}
+     * @param  {} bucketName
+     */
     createBucketData({ dispatch }, bucketName) {
       axios
         .post(`${baseURL}/bucket?bucketName=${bucketName}`)
@@ -42,7 +63,12 @@ const bucket_module = {
         .catch((err) => console.log(err));
     },
 
-    deleteBucketData({dispatch}, bucketName) {
+    /**
+     * Delete Bucket
+     * @param  {} {dispatch}
+     * @param  {} bucketName
+     */
+    deleteBucketData({ dispatch }, bucketName) {
       axios
         .delete(`${baseURL}/bucket/${bucketName}`)
         .then(() => {

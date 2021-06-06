@@ -64,7 +64,9 @@ import Loader from '../../components/Loader.vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 
-
+/**
+ * @author Eko Sutrisno
+ */
 export default {
   components: { BucketCard, ModalCreateBucket, Loader },
   setup(){

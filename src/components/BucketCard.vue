@@ -16,6 +16,7 @@
            Create date: {{ formatDateCreated(bucket.creationDate) }}
          </p>
       </div>
+      <Svg3 class="absolute top-0 right-0"/>
       <div class="w-40 h-40 rounded-full bg-indigo-400 opacity-20 absolute -bottom-10 -right-12"></div>
    </div>
 </router-link>
@@ -23,7 +24,13 @@
 
 <script>
 import moment from 'moment';
+import Svg3 from './svg/Svg3.vue';
+
+/**
+ * @author Eko Sutrisno
+ */
 export default {
+  components: { Svg3 },
    props:{
       bucket:{
          type: Object,

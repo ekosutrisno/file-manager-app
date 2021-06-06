@@ -58,7 +58,9 @@
 </template>
 
 <script>
-
+/**
+ * @author Eko Sutrisno
+ */
 export default {
 }
 </script>

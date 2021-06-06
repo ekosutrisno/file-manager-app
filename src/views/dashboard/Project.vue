@@ -79,6 +79,9 @@ const projects = [
  }
 ]
 
+/**
+ * @author Eko Sutrisno
+ */
 export default {
   components:{ProjectCard, ModalAddProject},
   setup() {

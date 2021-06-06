@@ -57,9 +57,13 @@
   </div>
 </template>
 
-<script>import { useRouter } from "vue-router";
+<script>
 
+import { useRouter } from "vue-router";
 
+/**
+ * @author Eko Sutrisno
+ */
 export default {
    setup(){
       const router = useRouter();

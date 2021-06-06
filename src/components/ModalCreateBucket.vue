@@ -54,6 +54,9 @@ import { reactive, toRefs } from 'vue';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useStore } from 'vuex';
 
+/**
+ * @author Eko Sutrisno
+ */
 export default {
   components: {
     Dialog,

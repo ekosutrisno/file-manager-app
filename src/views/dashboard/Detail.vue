@@ -42,7 +42,7 @@
                 <div class="inline-flex items-center space-x-2">
                   <span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
                   </span>
                 </div>
@@ -59,7 +59,7 @@
      </div>
       <div class="p-2 flex-1 overflow-y-auto on-scrollbar">
           <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-            <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none">
+            <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium hover:text-white text-indigo-600 transition-colors hover:bg-indigo-500 focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
             </svg>
@@ -119,14 +119,15 @@
 <script>
 import { computed, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios';
 import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 import ObjectFileCard from '../../components/ObjectFileCard.vue';
 import Loader from '../../components/Loader.vue';
 import {baseURL} from '../../assets/env';
 import { useStore } from 'vuex';
 
-
+/**
+ * @author Eko Sutrisno
+ */
 export default {
   components:{
     ModalDeleteBucket,

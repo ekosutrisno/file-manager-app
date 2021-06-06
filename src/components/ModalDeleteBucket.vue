@@ -55,6 +55,9 @@ import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } f
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
+/**
+ * @author Eko Sutrisno
+ */
 export default {
   components: {
     Dialog,

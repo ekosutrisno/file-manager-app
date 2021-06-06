@@ -1,12 +1,16 @@
 import { createApp } from "vue";
+
+/**
+ * Core Import
+ */
+import router from "./router";
+import store from "./store";
 import App from "./App.vue";
 import "./index.css";
 
-// Core
-import router from "./router";
-import store from "./store";
-
-// Dependency
+/**
+ * Dependency Import
+ */
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 const toastOptions = {
@@ -15,4 +19,9 @@ const toastOptions = {
   closeButton: false,
 };
 
-createApp(App).use(router).use(store).use(Toast, toastOptions).mount("#app");
+const app = createApp(App);
+
+app.use(router);
+app.use(store);
+app.use(Toast, toastOptions);
+app.mount("#app");
