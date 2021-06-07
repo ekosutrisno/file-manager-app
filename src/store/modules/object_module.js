@@ -16,15 +16,22 @@ const object_module = {
   state() {
     return {
       objects: [],
+      objectToDelete: {},
+      path: "",
       isProcess: false,
       isUploading: false,
       isDownloading: false,
+      isDeleteProcess: false,
+      isDeleteConfim: false,
       isRecursiveFolder: false,
     };
   },
   mutations: {
     SET_OBJECTS: (state, payload) => {
       state.objects = payload;
+    },
+    SET_PATH: (state, payload) => {
+      state.path = payload;
     },
     SET_IS_PROCESS: (state, payload) => {
       state.isProcess = payload;
@@ -38,6 +45,15 @@ const object_module = {
     SET_IS_DOWNLOADING: (state, payload) => {
       state.isDownloading = payload;
     },
+    SET_IS_DELETE_PROCESS: (state, payload) => {
+      state.isDeleteProcess = payload;
+    },
+    SET_IS_DELETE_CONFIRM: (state, payload) => {
+      state.isDeleteConfim = payload;
+    },
+    SET_OBJECT_TO_DELETE: (state, payload) => {
+      state.objectToDelete = payload;
+    },
   },
   actions: {
     /**
@@ -49,6 +65,7 @@ const object_module = {
     setObjectData({ commit, dispatch }, bucketName) {
       dispatch("setIsProcess", true);
       dispatch("setIsRecursiveFolder", false);
+      dispatch("setPath", "");
 
       axios
         .get(`${baseURL}/object/${bucketName}`)
@@ -68,11 +85,11 @@ const object_module = {
     setObjectDataPath({ commit, dispatch }, data) {
       dispatch("setIsProcess", true);
       dispatch("setIsRecursiveFolder", true);
+      dispatch("setPath", data.path);
 
       axios
         .get(`${baseURL}/object/${data.bucketName}/path?path=${data.path}`)
         .then((res) => {
-          console.log(res.data);
           commit("SET_OBJECTS", res.data);
           dispatch("setIsProcess", false);
         })
@@ -146,8 +163,52 @@ const object_module = {
 
         dispatch("setIsDownloading", false);
         fileLink.click();
-
       });
+    },
+
+    async onDeleteObject({ dispatch }, dataPayload) {
+      dispatch("setIsDeleteConfirm", false);
+      dispatch("setIsDeleteProcess", true);
+
+      await axios
+        .delete(
+          `${baseURL}/object/single?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
+        )
+        .then(() => {
+          if (!dataPayload.isRecursiveFolder) {
+            dispatch("setObjectData", dataPayload.bucketName);
+          } else {
+            var payload = {
+              bucketName: dataPayload.bucketName,
+              path: dataPayload.path,
+            };
+
+            dispatch("setObjectDataPath", payload);
+            dispatch("setIsDeleteProcess", false);
+            dispatch("setObjectToDelete", {});
+          }
+        })
+        .catch((err) => console.log(err));
+    },
+
+    async onDeleteDir({ dispatch }, dataPayload) {
+      dispatch("setIsDeleteConfirm", false);
+      dispatch("setIsDeleteProcess", true);
+      
+      await axios
+        .delete(
+          `${baseURL}/object/path?bucket=${dataPayload.bucketName}&path=${dataPayload.prefixPath}`
+        )
+        .then(() => {
+          dispatch("setObjectData", dataPayload.bucketName);
+          dispatch("setIsDeleteProcess", false);
+          dispatch("setObjectToDelete", {});
+        })
+        .catch((err) => console.log(err));
+    },
+
+    setPath({ commit }, path) {
+      commit("SET_PATH", path);
     },
 
     setIsProcess({ commit }, status) {
@@ -164,6 +225,16 @@ const object_module = {
 
     setIsRecursiveFolder({ commit }, status) {
       commit("SET_IS_RECURSIVE_FOLDER", status);
+    },
+
+    setIsDeleteProcess({ commit }, status) {
+      commit("SET_IS_DELETE_PROCESS", status);
+    },
+    setIsDeleteConfirm({ commit }, status) {
+      commit("SET_IS_DELETE_CONFIRM", status);
+    },
+    setObjectToDelete({ commit }, payload) {
+      commit("SET_OBJECT_TO_DELETE", payload);
     },
   },
 };

@@ -41,7 +41,7 @@ const bucket_module = {
         .then((res) => {
           commit(
             "SET_BUCKETS",
-            res.data.filter((d) => d.name.toLowerCase().includes("exo-"))
+            res.data /*.filter((d) => d.name.toLowerCase().includes("exo-"))*/
           ); // Filter Only For Dev
           dispatch("setIsProcessStatus", false);
         })

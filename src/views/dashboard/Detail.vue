@@ -1,8 +1,8 @@
 <template>
    <div class="sm:px-6 lg:px-8 flex flex-col h-full relative">
      <!-- Uploading / Downloading Indicator -->
-     <div v-if="isUploading || isDownloading" class="absolute bottom-5 font-semibold rounded-md right-5 z-10 w-52 h-14 shadow-xl px-4 flex items-center border bg-white">
-       <p>{{ isUploading ? "Uploading" : "Downloading" }}</p>
+     <div v-if="isUploading || isDownloading || isDeleteProcess" class="absolute bottom-5 font-semibold rounded-md right-5 z-10 w-52 h-14 shadow-xl px-4 flex items-center border bg-white">
+       <p>{{ isUploading ? "Uploading" : isDeleteProcess ? "Deleting" :"Downloading" }}</p>
        <Loader />
      </div>
 
@@ -77,7 +77,6 @@
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
                 :bucket="$route.params.bucketName"
-                @on-load-bucket-object="onLoadBucketObjectList"
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
@@ -119,17 +118,23 @@
       :isEmpty="checkIsEmpty"
       :bucketNameToDelete="$route.params.bucketName"
    />
+
+   <ModalDeleteObjectConfirm
+      :open="isDeleteConfim" 
+      @close-modal="isCancelDeleteConfirm"
+    />
    
 </template>
 
 <script>
 import { computed, onMounted, reactive, ref, toRefs } from 'vue';
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 import ObjectFileCard from '../../components/ObjectFileCard.vue';
 import Loader from '../../components/Loader.vue';
 import {baseURL} from '../../assets/env';
 import { useStore } from 'vuex';
+import ModalDeleteObjectConfirm from '../../components/ModalDeleteObjectConfirm.vue';
 
 /**
  * @author Eko Sutrisno
@@ -138,25 +143,31 @@ export default {
   components:{
     ModalDeleteBucket,
     ObjectFileCard,
-    Loader
+    Loader,
+    ModalDeleteObjectConfirm
   },
    setup () {
 
      const route = useRoute();
-     const router = useRouter();
      const store = useStore();
 
      const openModal = ref(false);
      
      const state = reactive({
-       objects: computed(()=> store.state.object_module.objects),
-       isRecursiveFolder: computed(()=> store.state.object_module.isRecursiveFolder),
        prefixPath: '',
        filterObject: '',
+       objects: computed(()=> store.state.object_module.objects),
+       isRecursiveFolder: computed(()=> store.state.object_module.isRecursiveFolder),
        isProcess: computed(()=> store.state.object_module.isProcess),
        isUploading: computed(()=> store.state.object_module.isUploading),
        isDownloading: computed(()=> store.state.object_module.isDownloading),
+       isDeleteConfim: computed(()=> store.state.object_module.isDeleteConfim),
+       isDeleteProcess: computed(()=> store.state.object_module.isDeleteProcess),
      })
+
+     const isCancelDeleteConfirm = async () =>{
+      await store.dispatch("object_module/setIsDeleteConfirm", false);
+     }
 
      /**
       * Check if the bucket is Empty
@@ -171,7 +182,7 @@ export default {
        store.dispatch("object_module/setObjectData", bucketName);
      }
 
-     const dataObjectList =computed(() => {
+     const dataObjectList = computed(() => {
        return state.objects
           .filter(object => object.objectName
             .toLowerCase()
@@ -184,10 +195,10 @@ export default {
     onMounted(()=> onLoadBucketObjectList());
 
     const onLoadBucketObjectListPath = (path) =>{
-       var data = {
-          bucketName: route.params.bucketName,
-          path: path
-        }
+      var data = {
+        bucketName: route.params.bucketName,
+        path: path
+      }
       store.dispatch("object_module/setObjectDataPath", data);
 
     }
@@ -226,9 +237,10 @@ export default {
       openModal,
       checkIsEmpty,
       dataObjectList,
-      onUploadObject, 
+      onUploadObject,
+      isCancelDeleteConfirm,
       onLoadBucketObjectList,
-      onLoadBucketObjectListPath
+      onLoadBucketObjectListPath,
     }
    }
 }

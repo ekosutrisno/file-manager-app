@@ -18,24 +18,18 @@
                 </div>
                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
-                    Delete Bucket <span v-if="!isEmpty" class="text-red-600">(Bucket is not empty!)</span>
+                   Are you sure you want to delete?
                   </DialogTitle>
                   <div class="mt-2">
                     <p class="text-sm text-gray-500">
-                      Bucket must be empty and this action cannot be undone. Type in the name of the bucket to confirm <span class="font-semibold text-indigo-800">`{{bucketNameToDelete}}`</span>
+                      This cannot be undone! <span class="font-semibold text-indigo-800"></span>
                     </p>
-                  </div>
-                  <div v-if="isEmpty" class="mt-5">
-                     <form @submit.prevent="onDeleteBucket">
-                        <label for="bucket-name" class="sr-only">Bucket Name</label>
-                        <input id="bucket-name" v-model="bucketName" :disabled="!isEmpty" name="bucket-name" type="text" autocomplete="off" required class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Bucket Name" />
-                     </form>
                   </div>
                 </div>
               </div>
             </div>
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-              <button v-if="isEmpty" type="button" @click="onDeleteBucket" :disabled="!confrmBucketName" :class="[confrmBucketName ? 'bg-red-600 hover:bg-red-700': 'bg-red-400']" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+              <button type="button" @click="onDeleteObject" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 text-base font-medium text-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
                 Delete
               </button>
               <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" @click="closeModal" ref="cancelButtonRef">
@@ -50,10 +44,10 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import { reactive } from '@vue/reactivity';
+import { computed } from '@vue/runtime-core';
 
 /**
  * @author Eko Sutrisno
@@ -71,50 +65,40 @@ export default {
         type: Boolean,
         required: true,
         default: false
-     },
-     isEmpty:{
-        type: Boolean,
-        required: true
-     },
-     bucketNameToDelete:{
-        type: String,
-        required: true
      }
   },
-  setup(props, ctx){
+  setup(_, ctx){
 
-     const router = useRouter();
      const store = useStore();
+     const state = reactive({
+        objectToDelete: computed(()=>store.state.object_module.objectToDelete)
+     });
 
      const closeModal = ()=>{
         ctx.emit('close-modal');
      }
      
-     const bucketName = ref('');
-     const confrmBucketName = computed(()=> props.bucketNameToDelete === bucketName.value);
-     
     /**
     * On Delete Bucket Action
-    * This action handling delete bucket with validate
+    * This action handling delete Object with validate
     */
-     const onDeleteBucket = () => {
-
-       if(props.isEmpty && confrmBucketName){
-          
-        store.dispatch("bucket_module/deleteBucketData", bucketName.value.toLowerCase())
-        .then(() =>{
-            router.push({ name: 'Dashboard', params: { deleteState: true } })
-            bucketName.value = '';
-            closeModal();
-         })
-       }
+     const onDeleteObject = async () => {
+        if(state.objectToDelete.isDirectory){
+           await store.dispatch("object_module/onDeleteDir", state.objectToDelete)
+              .then(()=> {
+                 closeModal()
+           });
+         }else{
+            await store.dispatch("object_module/onDeleteObject", state.objectToDelete)
+            .then(()=> {
+               closeModal()
+            });
+         }
      }
 
      return{
         closeModal,
-        bucketName,
-        onDeleteBucket,
-        confrmBucketName
+        onDeleteObject,
      }
   }
 }
