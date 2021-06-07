@@ -13,6 +13,7 @@
    <Svg1 v-if="object.dir" class="absolute -top-1 right-0"/>
    <Svg2 v-else class="absolute -top-1 right-0"/>
    <!-- End Decorate -->
+
    <div class="">
       <div class="flex items-center">
          <p @click="emitObjectListPath(object.objectName)" v-if="object.dir" class="inline w-auto focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
@@ -44,10 +45,10 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
-import {baseURL} from '../assets/env';
-import { reactive } from 'vue';
+import { baseURL } from '../assets/env';
 import Svg1 from './svg/Svg1.vue';
 import Svg2 from './svg/Svg2.vue';
+import { useStore } from 'vuex';
 
 /**
  * @author Eko Sutrisno
@@ -70,10 +71,7 @@ export default {
    },
    setup(props, ctx){
 
-      const state = reactive({
-         isDownloading: false,
-         isDownloadError: false
-      });
+      const store = useStore();
 
       /**
        * Emit for Handling onloadbucket
@@ -129,36 +127,12 @@ export default {
      * @param bucketName
      */
      const onDownloadObject = async ( objectName )=>{
-       var bucketName = props.bucket;
-       await axios.get(`${baseURL}/url?bucket=${bucketName}&object=${objectName}`)
-        .then((res) => {
-           try {
-              if(res.status == 200){
-               download(res.data);
-              }
-           } catch (error) {
-              console.log(error);
-           }
-        }).catch(err=> console.log(err));
+       var dataPayload ={
+          bucketName: props.bucket,
+          objectName: objectName
+       }
+       store.dispatch("object_module/onDownloadObject", dataPayload);
      }
-
-     const download = (object) => {
-         axios({
-               url: object.url,
-               method: 'GET',
-               responseType: 'blob',
-            }).then((response) => {
-               var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-               var fileLink = document.createElement('a');
-
-               fileLink.href = fileURL;
-               fileLink.setAttribute('download', object.name);
-               document.body.appendChild(fileLink);
-
-               fileLink.click();
-            });
-     }
-
 
       /**
       * Format date action using momen with format 'Apr 28, 2021 4:00 PM'

@@ -32,6 +32,12 @@ const object_module = {
     SET_IS_RECURSIVE_FOLDER: (state, payload) => {
       state.isRecursiveFolder = payload;
     },
+    SET_IS_UPLOADING: (state, payload) => {
+      state.isUploading = payload;
+    },
+    SET_IS_DOWNLOADING: (state, payload) => {
+      state.isDownloading = payload;
+    },
   },
   actions: {
     /**
@@ -79,6 +85,8 @@ const object_module = {
      * @param  {} dataPayload
      */
     onUploadObject({ dispatch }, dataPayload) {
+      dispatch("setIsUploading", true);
+
       axios
         .post(dataPayload.url, dataPayload.formData, {
           headers: {
@@ -88,8 +96,9 @@ const object_module = {
         .then(() => {
           dispatch("setObjectData", dataPayload.bucketName);
           toast.info(
-            `File has been uploaded to bucket ${dataPayload.bucketName.toUpperCase()}.`
+            `File has been uploaded to bucket ${dataPayload.bucketName}.`
           );
+          dispatch("setIsUploading", false);
         })
         .catch((err) => console.log(err));
     },
@@ -99,17 +108,58 @@ const object_module = {
      * @param  {} {dispatch}
      * @param  {} dataPayload
      */
-    onDownloadObject({ dispatch }, dataPayload) {},
+    async onDownloadObject({ dispatch }, dataPayload) {
+      dispatch("setIsDownloading", true);
+      await axios
+        .get(
+          `${baseURL}/url?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
+        )
+        .then((res) => {
+          try {
+            if (res.status == 200) {
+              dispatch("downloadAction", res.data);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        })
+        .catch((err) => console.log(err));
+    },
 
     /**
      * Download Function and Method Action
      * @param  {} {dispatch}
      * @param  {} dataPayload
      */
-    downloadAction({ dispatch }, dataPayload) {},
+    downloadAction({ dispatch }, object) {
+      axios({
+        url: object.url,
+        method: "GET",
+        responseType: "blob",
+      }).then((response) => {
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement("a");
+
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", object.name);
+        document.body.appendChild(fileLink);
+
+        dispatch("setIsDownloading", false);
+        fileLink.click();
+
+      });
+    },
 
     setIsProcess({ commit }, status) {
       commit("SET_IS_PROCESS", status);
+    },
+
+    setIsUploading({ commit }, status) {
+      commit("SET_IS_UPLOADING", status);
+    },
+
+    setIsDownloading({ commit }, status) {
+      commit("SET_IS_DOWNLOADING", status);
     },
 
     setIsRecursiveFolder({ commit }, status) {

@@ -1,5 +1,11 @@
 <template>
-   <div class="sm:px-6 lg:px-8 flex flex-col h-full">
+   <div class="sm:px-6 lg:px-8 flex flex-col h-full relative">
+     <!-- Uploading / Downloading Indicator -->
+     <div v-if="isUploading || isDownloading" class="absolute bottom-5 font-semibold rounded-md right-5 z-10 w-52 h-14 shadow-xl px-4 flex items-center border bg-white">
+       <p>{{ isUploading ? "Uploading" : "Downloading" }}</p>
+       <Loader />
+     </div>
+
      <div class="flex-none flex-shrink-0 h-48 border-b">
       <div class="lg:px-6 px-4 pb-2 flex justify-between items-center border-b border-gray-200">
         <router-link to="/u/dashboard" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
@@ -148,6 +154,8 @@ export default {
        prefixPath: '',
        filterObject: '',
        isProcess: computed(()=> store.state.object_module.isProcess),
+       isUploading: computed(()=> store.state.object_module.isUploading),
+       isDownloading: computed(()=> store.state.object_module.isDownloading),
      })
 
      /**
@@ -206,7 +214,7 @@ export default {
             }
             store.dispatch("object_module/onUploadObject", dataPayload)
               .then(()=>{
-                state.filterObject= "";
+                state.prefixPath= "";
               });
          }else{
             alert('Error when upload File')
