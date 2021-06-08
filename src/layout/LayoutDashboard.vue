@@ -94,7 +94,7 @@
           </DisclosurePanel>
         </Disclosure>
       </div>
-      <main class="flex-1 h-full overflow-y-auto py-2">
+      <main class="flex-1 h-full overflow-y-auto py-2 nv-transition">
           <router-view ></router-view>
       </main>
     </div>

@@ -75,7 +75,7 @@
             </button>
             <!-- Show Directory -->
             <p v-if="directories.length && !isRecursiveFolder && !onSearhing" class="px-4">Folders</p>
-            <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
               <ObjectFileCard 
                 v-for="(object, idx) in directories" 
                 :key="idx" 
@@ -89,7 +89,7 @@
 
             <!-- Show File -->
             <p v-if="objects.length && !onSearhing" class="px-4">Files</p>
-            <div v-if="objects.length && !onSearhing" class="w-full p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div v-if="objects.length && !onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
               <ObjectFileCard 
                 v-for="(object, idx) in objects" 
                 :key="idx" 
@@ -103,7 +103,7 @@
 
             <!-- Show File -->
             <p v-if="onSearhing" class="px-4">Relevance</p>
-            <div v-if="onSearhing" class="w-full p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div v-if="onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
               <ObjectFileCard 
                 v-for="(object, idx) in dataObjectList"
                 :key="idx" 

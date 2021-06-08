@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import { registerSW } from "virtual:pwa-register";
 
 /**
  * Core Import
@@ -20,6 +21,16 @@ const toastOptions = {
 };
 
 import VueEasyLightbox from "vue-easy-lightbox";
+
+const updateSW = registerSW({
+  onNeedRefresh() {
+    // show a prompt to user
+  },
+  onOfflineReady() {
+    // show a ready to work offline to user
+  },
+});
+
 
 const app = createApp(App);
 
