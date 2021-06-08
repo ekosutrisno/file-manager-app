@@ -16,7 +16,7 @@
 
    <div class="">
       <div class="flex items-center">
-         <p @click="emitObjectListPath(object.objectName)" v-if="object.dir" class="inline w-auto focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
+         <p @click="emitObjectListPath(object.objectName)" v-if="object.dir" class="inline w-full z-10 focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
             {{object.objectName}}
          </p>
          <span v-else class="font-semibold flex-1 w-0 truncate">
@@ -28,7 +28,7 @@
       </div>
    </div>
    <div class="inline-flex mt-4 space-x-2 justify-end float-right">
-      <button v-if="!object.dir" @click="onDownloadObject(object.objectName)" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
+      <button v-if="!object.dir" @click="onShowPreview" type="button" class="font-medium rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-indigo-600 hover:text-indigo-500 hover:bg-gray-100">
          <svg xmlns="http://www.w3.org/2000/svg" area-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -87,6 +87,13 @@ export default {
        */
       const emitObjectListPath = (object) => {
          ctx.emit('on-load-bucket-object-path', object);
+      }
+
+      /**
+       * Emit for Handling onloadbucket with folder
+       */
+      const onShowPreview = () => {
+         ctx.emit('on-show-preview');
       }
 
      /**
@@ -165,11 +172,12 @@ export default {
       return{
          ...toRefs(state),
          emitObjectListPath,
-         formatBytes,
          formatDateModified,
+         onDownloadObject,
          onDeleteObject,
+         onShowPreview,
+         formatBytes,
          onDeleteDir,
-         onDownloadObject
       }
    }
 }

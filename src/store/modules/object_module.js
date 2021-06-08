@@ -18,6 +18,7 @@ const object_module = {
       objects: [],
       objectToDelete: {},
       path: "",
+      urlPreview: "",
       isProcess: false,
       isUploading: false,
       isDownloading: false,
@@ -32,6 +33,9 @@ const object_module = {
     },
     SET_PATH: (state, payload) => {
       state.path = payload;
+    },
+    SET_URL_PREVIEW: (state, payload) => {
+      state.urlPreview = payload;
     },
     SET_IS_PROCESS: (state, payload) => {
       state.isProcess = payload;
@@ -177,6 +181,8 @@ const object_module = {
         .then(() => {
           if (!dataPayload.isRecursiveFolder) {
             dispatch("setObjectData", dataPayload.bucketName);
+            dispatch("setIsDeleteProcess", false);
+            dispatch("setObjectToDelete", {});
           } else {
             var payload = {
               bucketName: dataPayload.bucketName,
@@ -194,7 +200,7 @@ const object_module = {
     async onDeleteDir({ dispatch }, dataPayload) {
       dispatch("setIsDeleteConfirm", false);
       dispatch("setIsDeleteProcess", true);
-      
+
       await axios
         .delete(
           `${baseURL}/object/path?bucket=${dataPayload.bucketName}&path=${dataPayload.prefixPath}`
@@ -203,6 +209,23 @@ const object_module = {
           dispatch("setObjectData", dataPayload.bucketName);
           dispatch("setIsDeleteProcess", false);
           dispatch("setObjectToDelete", {});
+        })
+        .catch((err) => console.log(err));
+    },
+
+    async setUrlPreview({ commit }, dataPayload) {
+      await axios
+        .get(
+          `${baseURL}/url?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
+        )
+        .then((res) => {
+          try {
+            if (res.status == 200) {
+              commit("SET_URL_PREVIEW", res.data.url);
+            }
+          } catch (error) {
+            console.log(error);
+          }
         })
         .catch((err) => console.log(err));
     },

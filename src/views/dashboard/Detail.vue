@@ -77,6 +77,7 @@
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
                 :bucket="$route.params.bucketName"
+                @on-show-preview="showSingle(object.objectName)"
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
@@ -123,17 +124,28 @@
       :open="isDeleteConfim" 
       @close-modal="isCancelDeleteConfirm"
     />
+
+        <!-- all props & events -->
+    <VueEasyLightbox
+      scrollDisabled
+      escDisabled
+      :visible="visible"
+      :imgs="imgs"
+      :index="index"
+      @hide="handleHide"
+    ></VueEasyLightbox>
    
 </template>
 
 <script>
 import { computed, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute } from 'vue-router'
+import {baseURL} from '../../assets/env';
+import { useStore } from 'vuex';
 import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 import ObjectFileCard from '../../components/ObjectFileCard.vue';
 import Loader from '../../components/Loader.vue';
-import {baseURL} from '../../assets/env';
-import { useStore } from 'vuex';
+import VueEasyLightbox from "vue-easy-lightbox";
 import ModalDeleteObjectConfirm from '../../components/ModalDeleteObjectConfirm.vue';
 
 /**
@@ -141,10 +153,11 @@ import ModalDeleteObjectConfirm from '../../components/ModalDeleteObjectConfirm.
  */
 export default {
   components:{
+    ModalDeleteObjectConfirm,
     ModalDeleteBucket,
+    VueEasyLightbox,
     ObjectFileCard,
     Loader,
-    ModalDeleteObjectConfirm
   },
    setup () {
 
@@ -154,6 +167,9 @@ export default {
      const openModal = ref(false);
      
      const state = reactive({
+       imgs: computed(()=> store.state.object_module.urlPreview),
+       visible: false,
+       index: 0, 
        prefixPath: '',
        filterObject: '',
        objects: computed(()=> store.state.object_module.objects),
@@ -232,11 +248,29 @@ export default {
          }
       }
 
+     const show = () => {
+        state.visible = true;
+      };
+     const handleHide = () => {
+        state.visible = false;
+      };
+
+    const showSingle = (objectName) => {
+      var data = {
+        bucketName: route.params.bucketName,
+        objectName: objectName
+      }
+      store.dispatch("object_module/setUrlPreview", data)
+      .then(() => show())
+    };
+
     return {
       ...toRefs(state),
       openModal,
       checkIsEmpty,
       dataObjectList,
+      handleHide,
+      showSingle,
       onUploadObject,
       isCancelDeleteConfirm,
       onLoadBucketObjectList,

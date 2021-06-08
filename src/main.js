@@ -19,9 +19,12 @@ const toastOptions = {
   closeButton: false,
 };
 
+import VueEasyLightbox from "vue-easy-lightbox";
+
 const app = createApp(App);
 
 app.use(router);
 app.use(store);
+app.use(VueEasyLightbox)
 app.use(Toast, toastOptions);
 app.mount("#app");
