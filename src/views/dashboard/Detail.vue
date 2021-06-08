@@ -1,15 +1,15 @@
 <template>
-   <div class="sm:px-6 lg:px-8 flex flex-col h-full relative">
+   <div class="sm:px-6 lg:px-8 flex flex-col h-full max-w-screen-2xl mx-auto relative">
      <!-- Uploading / Downloading Indicator -->
      <div v-if="isUploading || isDownloading || isDeleteProcess" class="absolute bottom-5 font-semibold rounded-md right-5 z-10 w-52 h-14 shadow-xl px-4 flex items-center border bg-white">
        <p>{{ isUploading ? "Uploading" : isDeleteProcess ? "Deleting" :"Downloading" }}</p>
        <Loader />
      </div>
 
-     <div class="flex-none flex-shrink-0 h-48 border-b">
+     <div class="flex-none flex-shrink-0 h-32 border-b">
       <div class="lg:px-6 px-4 pb-2 flex justify-between items-center border-b border-gray-200">
-        <router-link to="/u/dashboard" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
-          <span>
+        <router-link to="/u/dashboard" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
+          <span class="hidden md:block">
               Back
           </span>
          <span>
@@ -18,27 +18,29 @@
             </svg>
          </span>
         </router-link>
+
+        <div class="w-full md:max-w-md mx-auto">
+          <label for="search-object" class="sr-only">Search Object</label>
+          <input id="search-object" v-model="filterObject" name="search-object" type="text" autocomplete="off" required class="appearance-none relative w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Search object..." />        
+        </div>
+
         <div class="inline-block sm:inline-flex items-center space-x-2">
           <div class="sm:flex hidden items-center space-x-1 justify-center px-4 py-2 text-sm font-medium text-indigo-600 bg-white">
-            <span>Bucket: </span> 
+            <span class="hidden lg:block">Bucket: </span> 
             <span class="uppercase">
                 {{$route.params.bucketName }}
             </span>
           </div>
-          <button @click="openModal = !openModal" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none">
+          <button @click="openModal = !openModal" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
           </button>
         </div>
       </div>
-        <div class="flex items-center justify-center p-4">
-            <div class="w-full md:max-w-md">
-              <label for="search-object" class="sr-only">Search Object</label>
-              <input id="search-object" v-model="filterObject" name="search-object" type="text" autocomplete="off" required class="appearance-none relative w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Search object..." />        
-            </div>
-        </div>
-        <div class="p-4 flex flex-row items-center sm:justify-end">
+      <div class="py-4 px-4 md:px-10 flex items-center justify-between">
+        <p class="hidden md:block text-sm">Path: <span class="font-extrabold">{{ path ? path : './' }}</span></p>
+        <div class="flex items-center sm:justify-end">
           <div class="mr-2">
             <label for="bucket-name" class="sr-only">Bucket Name</label>
             <input id="bucket-name" v-model="prefixPath" name="bucket-name" type="text" autocomplete="off" class="appearance-none relative block w-full px-3 py-1.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Path (prefix)" />
@@ -62,17 +64,20 @@
               </label>
           </button>
         </div>
+      </div>
      </div>
-      <div class="p-2 flex-1 overflow-y-auto on-scrollbar">
+      <div class="py-2 px-2 md:px-6 flex-1 overflow-y-auto on-scrollbar">
           <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
             <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium hover:text-white text-indigo-600 transition-colors hover:bg-indigo-500 focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
             </svg>
             </button>
-            <div v-if="dataObjectList.length" class="w-full p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <!-- Show Directory -->
+            <p v-if="directories.length && !isRecursiveFolder && !onSearhing" class="px-4">Folders</p>
+            <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
               <ObjectFileCard 
-                v-for="(object, idx) in dataObjectList" 
+                v-for="(object, idx) in directories" 
                 :key="idx" 
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
@@ -81,12 +86,40 @@
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
-            <div v-else-if="dataObjectList.length == 0 && isProcess" class="flex flex-col items-center justify-center">
+
+            <!-- Show File -->
+            <p v-if="objects.length && !onSearhing" class="px-4">Files</p>
+            <div v-if="objects.length && !onSearhing" class="w-full p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              <ObjectFileCard 
+                v-for="(object, idx) in objects" 
+                :key="idx" 
+                :object="object"
+                :isRecursiveFolder="isRecursiveFolder"
+                :bucket="$route.params.bucketName"
+                @on-show-preview="showSingle(object.objectName)"
+                @on-load-bucket-object-path="onLoadBucketObjectListPath"
+              />
+            </div>
+
+            <!-- Show File -->
+            <p v-if="onSearhing" class="px-4">Relevance</p>
+            <div v-if="onSearhing" class="w-full p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              <ObjectFileCard 
+                v-for="(object, idx) in dataObjectList"
+                :key="idx" 
+                :object="object"
+                :isRecursiveFolder="isRecursiveFolder"
+                :bucket="$route.params.bucketName"
+                @on-show-preview="showSingle(object.objectName)"
+                @on-load-bucket-object-path="onLoadBucketObjectListPath"
+              />
+            </div>
+            <div v-if="dataObjectList.length == 0 && isProcess" class="flex flex-col items-center justify-center">
               <Loader/>
               <p>Fetching Object</p>
             </div>
-            <div v-else>
-              <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+            <div v-else class="p-2">
+              <div class="mt-1 max-w-lg mx-auto flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                 <div class="space-y-1 text-center">
                   <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -113,6 +146,7 @@
           </div>
       </div>
    </div>
+   <!-- Modal Delete Bucket -->
    <ModalDeleteBucket 
       :open="openModal" 
       @close-modal="openModal= false" 
@@ -120,12 +154,13 @@
       :bucketNameToDelete="$route.params.bucketName"
    />
 
+    <!-- Modal Delete Object Confirmation -->
    <ModalDeleteObjectConfirm
       :open="isDeleteConfim" 
       @close-modal="isCancelDeleteConfirm"
     />
 
-        <!-- all props & events -->
+    <!-- Preview Component -->
     <VueEasyLightbox
       scrollDisabled
       escDisabled
@@ -133,7 +168,7 @@
       :imgs="imgs"
       :index="index"
       @hide="handleHide"
-    ></VueEasyLightbox>
+    />
    
 </template>
 
@@ -167,12 +202,15 @@ export default {
      const openModal = ref(false);
      
      const state = reactive({
-       imgs: computed(()=> store.state.object_module.urlPreview),
+       imgs: "",
        visible: false,
        index: 0, 
        prefixPath: '',
        filterObject: '',
+       allObjects: computed(()=> store.state.object_module.allObjects),
+       path: computed(()=> store.state.object_module.path),
        objects: computed(()=> store.state.object_module.objects),
+       directories: computed(()=> store.state.object_module.directories),
        isRecursiveFolder: computed(()=> store.state.object_module.isRecursiveFolder),
        isProcess: computed(()=> store.state.object_module.isProcess),
        isUploading: computed(()=> store.state.object_module.isUploading),
@@ -188,7 +226,8 @@ export default {
      /**
       * Check if the bucket is Empty
       */
-     const checkIsEmpty = computed(() => state.objects.length == 0);
+     const checkIsEmpty = computed(() => state.allObjects.length == 0);
+     const onSearhing = computed(() => state.filterObject.trim().length > 0);
 
     /**
      * Load All Bucket When Mounted
@@ -199,7 +238,7 @@ export default {
      }
 
      const dataObjectList = computed(() => {
-       return state.objects
+       return state.allObjects
           .filter(object => object.objectName
             .toLowerCase()
             .includes(state.filterObject.toLowerCase()));
@@ -211,6 +250,9 @@ export default {
     onMounted(()=> onLoadBucketObjectList());
 
     const onLoadBucketObjectListPath = (path) =>{
+      // Clear Filter
+      state.filterObject = "";
+
       var data = {
         bucketName: route.params.bucketName,
         path: path
@@ -261,13 +303,17 @@ export default {
         objectName: objectName
       }
       store.dispatch("object_module/setUrlPreview", data)
-      .then(() => show())
+        .then(() =>{ 
+          show();
+          state.imgs = computed(()=> store.state.object_module.urlPreview);
+        })
     };
 
     return {
       ...toRefs(state),
       openModal,
       checkIsEmpty,
+      onSearhing,
       dataObjectList,
       handleHide,
       showSingle,

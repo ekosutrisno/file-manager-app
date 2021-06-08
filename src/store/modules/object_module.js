@@ -15,7 +15,9 @@ const object_module = {
   namespaced: true,
   state() {
     return {
+      allObjects:[],
       objects: [],
+      directories: [],
       objectToDelete: {},
       path: "",
       urlPreview: "",
@@ -30,6 +32,12 @@ const object_module = {
   mutations: {
     SET_OBJECTS: (state, payload) => {
       state.objects = payload;
+    },
+    SET_ALL_OBJECT: (state, payload) => {
+      state.allObjects = payload;
+    },
+    SET_DIRECTORIES: (state, payload) => {
+      state.directories = payload;
     },
     SET_PATH: (state, payload) => {
       state.path = payload;
@@ -74,7 +82,16 @@ const object_module = {
       axios
         .get(`${baseURL}/object/${bucketName}`)
         .then((res) => {
-          commit("SET_OBJECTS", res.data);
+          commit("SET_ALL_OBJECT", res.data);
+
+          var dirList = []; // Filter Object type Directory
+          dirList = res.data.filter((file) => file.dir == true);
+
+          var fileList = []; // Filter Object type File
+          fileList = res.data.filter((file) => file.dir == false);
+
+          commit("SET_DIRECTORIES", dirList);
+          commit("SET_OBJECTS", fileList);
           dispatch("setIsProcess", false);
         })
         .catch((err) => console.log(err));
@@ -169,7 +186,11 @@ const object_module = {
         fileLink.click();
       });
     },
-
+    /**
+     * Delete Object Action
+     * @param  {} {dispatch}
+     * @param  {} dataPayload
+     */
     async onDeleteObject({ dispatch }, dataPayload) {
       dispatch("setIsDeleteConfirm", false);
       dispatch("setIsDeleteProcess", true);
@@ -196,7 +217,11 @@ const object_module = {
         })
         .catch((err) => console.log(err));
     },
-
+    /**
+     * Delete Object as Directory
+     * @param  {} {dispatch}
+     * @param  {} dataPayload
+     */
     async onDeleteDir({ dispatch }, dataPayload) {
       dispatch("setIsDeleteConfirm", false);
       dispatch("setIsDeleteProcess", true);
@@ -212,7 +237,11 @@ const object_module = {
         })
         .catch((err) => console.log(err));
     },
-
+    /**
+     * Set Url for preview image file
+     * @param  {} {commit}
+     * @param  {} dataPayload
+     */
     async setUrlPreview({ commit }, dataPayload) {
       await axios
         .get(

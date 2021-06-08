@@ -1,5 +1,5 @@
 <template>
-<div class="border relative overflow-hidden border-gray-200 p-4 rounded-md min-h-full items-center justify-between text-sm hover:shadow-xl">
+<div class="border relative overflow-hidden border-gray-200 p-4 rounded-md h-full max-h-32 items-center justify-between text-sm hover:shadow-xl">
    <!-- Decorate -->
    <div :class="[object.dir ? 'bg-indigo-400 opacity-30 w-28 h-28 -bottom-10 -left-12': 'bg-green-400 opacity-30 w-16 h-16 -bottom-6 -left-5']" class="rounded-full absolute"></div>
    <div :class="[object.dir ? 'text-indigo-600': 'text-green-600']" class="absolute bottom-2 left-2 text-xs font-semibold">
@@ -9,6 +9,7 @@
       <svg v-else xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
       </svg>
+       <span class="text-xs">{{!object.dir ? checkFileExt(object.objectName) : ''}}</span>
    </div>
    <Svg1 v-if="object.dir" class="absolute -top-1 right-0"/>
    <Svg2 v-else class="absolute -top-1 right-0"/>
@@ -169,8 +170,14 @@ export default {
          return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
       }
 
+      const checkFileExt = (fileName) =>{
+         var fileExtensionPattern = /\.([0-9a-z]+)(?=[?#])|(\.)(?:[\w]+)$/gmi;
+         return fileName.match(fileExtensionPattern)[0];
+      }
+
       return{
          ...toRefs(state),
+         checkFileExt,
          emitObjectListPath,
          formatDateModified,
          onDownloadObject,

@@ -95,7 +95,7 @@
         </Disclosure>
       </div>
       <main class="flex-1 h-full overflow-y-auto py-2">
-          <router-view></router-view>
+          <router-view ></router-view>
       </main>
     </div>
   </div>
