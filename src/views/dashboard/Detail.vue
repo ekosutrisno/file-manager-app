@@ -26,12 +26,16 @@
 
         <div class="inline-block sm:inline-flex items-center space-x-2">
           <div class="sm:flex hidden items-center space-x-1 justify-center px-4 py-2 text-sm font-medium text-indigo-600 bg-white">
-            <span class="hidden lg:block">Bucket: </span> 
+            <span class="hidden lg:block">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+              </svg>  
+            </span> 
             <span class="uppercase">
                 {{$route.params.bucketName }}
             </span>
           </div>
-          <button @click="openModal = !openModal" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none">
+          <button @click="openModal = !openModal" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-indigo-600 hover:bg-indigo-50 focus:outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
@@ -39,14 +43,21 @@
         </div>
       </div>
       <div class="py-4 px-4 md:px-10 flex items-center justify-between">
-        <p class="hidden md:block text-sm">Path: <span class="font-extrabold text-indigo-600">{{ path ? path : './' }}</span></p>
+        <p class="hidden md:inline-flex items-center text-sm">
+          <span class="cursor-pointer text-indigo-400 hover:text-indigo-800" @click="onLoadBucketObjectList">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+          </span>
+          <span class="font-extrabold text-indigo-600">{{ path ? './'+path : './' }}</span>
+        </p>
         <div class="flex items-center sm:justify-end">
           <div class="mr-2">
             <label for="bucket-name" class="sr-only">Bucket Name</label>
             <input id="bucket-name" v-model="prefixPath" name="bucket-name" type="text" autocomplete="off" class="appearance-none relative block w-full px-3 py-1.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Add Folder" />
           </div>
           <button class="focus:outline-none">
-            <label for="file-upload" class="relative cursor-pointer py-2 px-3 transition bg-indigo-100 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+            <label for="file-upload" class="relative cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                 <div class="inline-flex items-center space-x-2">
                   <span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,11 +76,11 @@
                 />
               </label>
           </button>
-          <button @click="onChangeDisplay" class="ml-2 cursor-pointer py-2 px-3 transition bg-indigo-100 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+          <button @click="onChangeDisplay" class="ml-2 cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
             <svg v-if="display === 'block'" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg v-else xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-5 hi w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
           </button>
@@ -129,7 +140,7 @@
               <p>Fetching Object</p>
             </div>
             <div v-else class="p-2">
-              <div @dragover="dragover" @dragleave="dragleave" @drop="drop" class="mt-1 max-w-lg mx-auto flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+              <div @dragover="dragover" @dragleave="dragleave" @drop="drop" class="mt-1 max-w-lg mx-auto flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition-colors">
                 <div class="space-y-1 text-center">
                   <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -355,14 +366,14 @@ export default {
       if (!event.currentTarget.classList.contains('border-indigo-400')) {
         event.currentTarget.classList.remove('border-gray-300');
         event.currentTarget.classList.add('border-indigo-400');
-        event.currentTarget.classList.add('bg-indigo-100');
+        event.currentTarget.classList.add('bg-indigo-50');
       }
     }
     const dragleave = (event)=> {
       // Clean up
       event.currentTarget.classList.remove('border-indigo-400');
       event.currentTarget.classList.add('border-gray-300');
-      event.currentTarget.classList.remove('bg-indigo-100');
+      event.currentTarget.classList.remove('bg-indigo-50');
     }
     const drop = (event) => {
       event.preventDefault();
@@ -374,7 +385,7 @@ export default {
       // Clean Up UI
       event.currentTarget.classList.remove('border-indigo-400');
       event.currentTarget.classList.add('border-gray-300');
-      event.currentTarget.classList.remove('bg-indigo-100');
+      event.currentTarget.classList.remove('bg-indigo-50');
     }
 
     const onChangeDisplay = () =>{
