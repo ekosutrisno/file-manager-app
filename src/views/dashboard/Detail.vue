@@ -39,11 +39,11 @@
         </div>
       </div>
       <div class="py-4 px-4 md:px-10 flex items-center justify-between">
-        <p class="hidden md:block text-sm">Path: <span class="font-extrabold">{{ path ? path : './' }}</span></p>
+        <p class="hidden md:block text-sm">Path: <span class="font-extrabold text-indigo-600">{{ path ? path : './' }}</span></p>
         <div class="flex items-center sm:justify-end">
           <div class="mr-2">
             <label for="bucket-name" class="sr-only">Bucket Name</label>
-            <input id="bucket-name" v-model="prefixPath" name="bucket-name" type="text" autocomplete="off" class="appearance-none relative block w-full px-3 py-1.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Path (prefix)" />
+            <input id="bucket-name" v-model="prefixPath" name="bucket-name" type="text" autocomplete="off" class="appearance-none relative block w-full px-3 py-1.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Add Folder" />
           </div>
           <button class="focus:outline-none">
             <label for="file-upload" class="relative cursor-pointer py-2 px-3 transition bg-indigo-100 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
@@ -56,12 +56,22 @@
                 </div>
                 <input 
                   id="file-upload" 
-                  name="file-upload" 
+                  name="file-upload"
+                  multiple 
                   type="file" 
                   class="sr-only"
+                  accept="*"
                   @change="onUploadObject" 
                 />
               </label>
+          </button>
+          <button @click="onChangeDisplay" class="ml-2 cursor-pointer py-2 px-3 transition bg-indigo-100 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+            <svg v-if="display === 'block'" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
           </button>
         </div>
       </div>
@@ -75,7 +85,7 @@
             </button>
             <!-- Show Directory -->
             <p v-if="directories.length && !isRecursiveFolder && !onSearhing" class="px-4">Folders</p>
-            <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <ObjectFileCard 
                 v-for="(object, idx) in directories" 
                 :key="idx" 
@@ -89,7 +99,7 @@
 
             <!-- Show File -->
             <p v-if="objects.length && !onSearhing" class="px-4">Files</p>
-            <div v-if="objects.length && !onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div v-if="objects.length && !onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <ObjectFileCard 
                 v-for="(object, idx) in objects" 
                 :key="idx" 
@@ -103,7 +113,7 @@
 
             <!-- Show File -->
             <p v-if="onSearhing" class="px-4">Relevance</p>
-            <div v-if="onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div v-if="onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <ObjectFileCard 
                 v-for="(object, idx) in dataObjectList"
                 :key="idx" 
@@ -119,26 +129,29 @@
               <p>Fetching Object</p>
             </div>
             <div v-else class="p-2">
-              <div class="mt-1 max-w-lg mx-auto flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+              <div @dragover="dragover" @dragleave="dragleave" @drop="drop" class="mt-1 max-w-lg mx-auto flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                 <div class="space-y-1 text-center">
                   <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                   <div class="flex text-sm text-gray-600">
-                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                    <label for="assetsFieldHandle" class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                       <span>Upload a file</span>
                       <input 
-                        id="file-upload" 
-                        name="file-upload" 
+                        name="fields[assetsFieldHandle][]" 
+                        id="assetsFieldHandle"
+                        multiple
                         type="file" 
                         class="sr-only"
-                        @change="onUploadObject" 
+                        @change="onChange" 
+                        ref="file"
+                        accept="*"
                       />
                     </label>
                     <p class="pl-1">or drag and drop</p>
                   </div>
                   <p class="text-xs text-gray-500">
-                    PNG, JPG, GIF, and File up to 10MB
+                    PNG, JPG, GIF, and File
                   </p>
                 </div>
               </div>
@@ -206,7 +219,9 @@ export default {
        visible: false,
        index: 0, 
        prefixPath: '',
+       fileList: [],
        filterObject: '',
+       display: computed(()=> store.state.display_module.display),
        allObjects: computed(()=> store.state.object_module.allObjects),
        path: computed(()=> store.state.object_module.path),
        objects: computed(()=> store.state.object_module.objects),
@@ -265,30 +280,43 @@ export default {
      * Upload Object action
      */
      const onUploadObject = (event) => {
-         if (event.target.files && event.target.files[0]) {
-            const fileToUpload = event.target.files[0];
-            let formData = new FormData();
-            formData.append('file', fileToUpload);
-
-            var bucketName = route.params.bucketName;
-
-            let URL = state.prefixPath.trim().length > 0 
-                      ? `${baseURL}/object?bucket=${bucketName}&path=${state.prefixPath.toLowerCase()}`
-                      : `${baseURL}/object?bucket=${bucketName}`
-
-            var dataPayload = {
-              formData: formData,
-              bucketName: bucketName,
-              url: URL
-            }
-            store.dispatch("object_module/onUploadObject", dataPayload)
-              .then(()=>{
-                state.prefixPath= "";
-              });
-         }else{
-            alert('Error when upload File')
-         }
+       const fileToUpload = event.target.files;
+       if(fileToUpload.length > 0){
+         onUploadMultipleFile(fileToUpload);
+       }
       }
+
+    /**
+     * Upload Multiple File Handler
+     * @param files arays of File
+     */
+     const onUploadMultipleFile = (files) => {
+       if(files.length > 0){
+            files.forEach( async (file ) => {
+                let formData = new FormData();
+                formData.append('file', file);
+
+                var bucketName = route.params.bucketName;
+
+                let URL = state.prefixPath.trim().length > 0 
+                          ? `${baseURL}/object?bucket=${bucketName}&path=${state.prefixPath.toLowerCase()+'/'}`
+                          : `${baseURL}/object?bucket=${bucketName}`
+
+                var dataPayload = {
+                  formData: formData,
+                  bucketName: bucketName,
+                  url: URL
+                }
+                
+                await store.dispatch("object_module/onUploadObject", dataPayload)
+                      .then(()=>{
+                        console.log("file uploaded");
+                      });
+            })
+       }
+       // Clean prefix path
+       state.prefixPath= "";
+     }
 
      const show = () => {
         state.visible = true;
@@ -309,6 +337,51 @@ export default {
         })
     };
 
+    // Instance of Input File
+    const file = ref(null);
+
+    const onChange = ()=> {
+     state.fileList = [...file.files];
+
+     onUploadMultipleFile(state.fileList);
+
+    }
+    const remove = (i) =>{
+      state.fileList.splice(i, 1);
+    }
+    const dragover = (event) => {
+      event.preventDefault();
+      // Add some visual fluff to show the user can drop its files
+      if (!event.currentTarget.classList.contains('border-indigo-400')) {
+        event.currentTarget.classList.remove('border-gray-300');
+        event.currentTarget.classList.add('border-indigo-400');
+        event.currentTarget.classList.add('bg-indigo-100');
+      }
+    }
+    const dragleave = (event)=> {
+      // Clean up
+      event.currentTarget.classList.remove('border-indigo-400');
+      event.currentTarget.classList.add('border-gray-300');
+      event.currentTarget.classList.remove('bg-indigo-100');
+    }
+    const drop = (event) => {
+      event.preventDefault();
+      file.files = event.dataTransfer.files;
+
+      // Trigger the onChange event manually
+      onChange();
+
+      // Clean Up UI
+      event.currentTarget.classList.remove('border-indigo-400');
+      event.currentTarget.classList.add('border-gray-300');
+      event.currentTarget.classList.remove('bg-indigo-100');
+    }
+
+    const onChangeDisplay = () =>{
+      var displayPayload = state.display === 'block' ? 'list' : 'block'
+      store.dispatch("display_module/onChangeDisplay", displayPayload);
+    }
+
     return {
       ...toRefs(state),
       openModal,
@@ -321,6 +394,12 @@ export default {
       isCancelDeleteConfirm,
       onLoadBucketObjectList,
       onLoadBucketObjectListPath,
+      onChange,
+      remove,
+      dragover,
+      dragleave,
+      drop,
+      onChangeDisplay
     }
    }
 }
