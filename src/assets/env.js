@@ -1,5 +1,5 @@
-const IS_DEV = true;
-const IS_PROD_ERA = false;
+const IS_DEV = false;
+const IS_PROD_ERA = true;
 
 export const baseURL = IS_DEV
   ? "http://localhost:9099/file"
