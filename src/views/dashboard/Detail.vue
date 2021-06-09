@@ -88,7 +88,7 @@
       </div>
      </div>
       <div class="py-2 px-2 md:px-6 flex-1 overflow-y-auto on-scrollbar">
-          <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <div v-if="display === 'block'" class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
             <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium hover:text-white text-indigo-600 transition-colors hover:bg-indigo-500 focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
@@ -122,7 +122,7 @@
               />
             </div>
 
-            <!-- Show File -->
+            <!-- Show Filter -->
             <p v-if="onSearhing" class="px-4">Relevance</p>
             <div v-if="onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <ObjectFileCard 
@@ -135,36 +135,74 @@
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
-            <div v-if="dataObjectList.length == 0 && isProcess" class="flex flex-col items-center justify-center">
+          </div>
+          <div v-else>
+            <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium hover:text-white text-indigo-600 transition-colors hover:bg-indigo-500 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+              </svg>
+            </button>
+
+            <!-- Show Directory -->
+            <p v-if="directories.length && !isRecursiveFolder && !onSearhing" class="px-4 text-sm">Folders</p>
+            <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full nv-transition p-2 sm:p-4 space-y-1">
+              <ObjectFileCardFlex 
+                v-for="(object, idx) in directories" 
+                :key="idx" 
+                :object="object"
+                :isRecursiveFolder="isRecursiveFolder"
+                :bucket="$route.params.bucketName"
+                @on-show-preview="showSingle(object.objectName)"
+                @on-load-bucket-object-path="onLoadBucketObjectListPath"
+              />
+            </div>
+
+            <!-- Show File -->
+            <p v-if="objects.length && !onSearhing" class="px-4">Files</p>
+            <div v-if="objects.length && !onSearhing" class="w-full nv-transition p-2 sm:p-4 space-y-1">
+              <ObjectFileCardFlex 
+                v-for="(object, idx) in objects" 
+                :key="idx" 
+                :object="object"
+                :isRecursiveFolder="isRecursiveFolder"
+                :bucket="$route.params.bucketName"
+                @on-show-preview="showSingle(object.objectName)"
+                @on-load-bucket-object-path="onLoadBucketObjectListPath"
+              />
+            </div>
+
+          </div>
+
+          <!-- Drag and Drop Section -->
+          <div class="p-2">
+             <div v-if="dataObjectList.length == 0 && isProcess" class="flex flex-col mb-5 items-center justify-center">
               <Loader/>
               <p>Fetching Object</p>
             </div>
-            <div v-else class="p-2">
-              <div @dragover="dragover" @dragleave="dragleave" @drop="drop" class="mt-1 max-w-lg mx-auto flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition-colors">
-                <div class="space-y-1 text-center">
-                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                  <div class="flex text-sm text-gray-600">
-                    <label for="assetsFieldHandle" class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                      <span>Upload a file</span>
-                      <input 
-                        name="fields[assetsFieldHandle][]" 
-                        id="assetsFieldHandle"
-                        multiple
-                        type="file" 
-                        class="sr-only"
-                        @change="onChange" 
-                        ref="file"
-                        accept="*"
-                      />
-                    </label>
-                    <p class="pl-1">or drag and drop</p>
-                  </div>
-                  <p class="text-xs text-gray-500">
-                    PNG, JPG, GIF, and File
-                  </p>
+            <div @dragover="dragover" @dragleave="dragleave" @drop="drop" class="mt-1 max-w-lg mx-auto flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition-colors">
+              <div class="space-y-1 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div class="flex text-sm text-gray-600">
+                  <label for="file-upload" class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                    <span>Upload a file</span>
+                    <input 
+                      name="assetsFieldHandle" 
+                      id="assetsFieldHandle"
+                      multiple
+                      type="file" 
+                      class="sr-only"
+                      @change="onChange" 
+                      ref="file"
+                      accept="*"
+                    />
+                  </label>
+                  <p class="pl-1">or drag and drop</p>
                 </div>
+                <p class="text-xs text-gray-500">
+                  PNG, JPG, GIF, and File
+                </p>
               </div>
             </div>
           </div>
@@ -206,6 +244,7 @@ import ObjectFileCard from '../../components/ObjectFileCard.vue';
 import Loader from '../../components/Loader.vue';
 import VueEasyLightbox from "vue-easy-lightbox";
 import ModalDeleteObjectConfirm from '../../components/ModalDeleteObjectConfirm.vue';
+import ObjectFileCardFlex from '../../components/ObjectFileCardFlex.vue';
 
 /**
  * @author Eko Sutrisno
@@ -217,6 +256,7 @@ export default {
     VueEasyLightbox,
     ObjectFileCard,
     Loader,
+    ObjectFileCardFlex,
   },
    setup () {
 

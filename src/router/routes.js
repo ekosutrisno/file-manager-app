@@ -17,10 +17,12 @@ const routes = [
     children: [
       {
         path: "/",
+        name:"HomePage",
         component: HomePage,
       },
       {
         path: "/u/login",
+        name: "LoginPage",
         component: LoginPage,
       },
     ],
@@ -36,18 +38,22 @@ const routes = [
       },
       {
         path: "/u/dashboard/bucket/:bucketName",
+        name: "Detail",
         component: Detail,
       },
       {
         path: "/u/dashboard/teams",
+        name: "Team",
         component: Team,
       },
       {
         path: "/u/dashboard/projects",
+        name: "Project",
         component: Project,
       },
       {
         path: "/u/dashboard/profile",
+        name: "Profile",
         component: Profile,
       },
     ],

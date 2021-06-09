@@ -1,5 +1,5 @@
 <template>
-<router-link :to="`/u/dashboard/bucket/${bucket.name}`">
+<router-link class="focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 rounded-md" :to="`/u/dashboard/bucket/${bucket.name}`">
    <div class="w-full flex h-full p-4 overflow-hidden relative bg-white border hover:shadow-xl cursor-pointer rounded-md">
       <div>
          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">

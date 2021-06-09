@@ -65,21 +65,21 @@
       <router-link to="/u/dashboard" class="mt-6 mb-10  py-2 px-8 rounded-md bg-indigo-400 text-white hover:bg-indigo-500">Dashboard</router-link>
 
       <div class="grid h-full grid-cols-6 gap-4 my-4">
-        <Jpg class="md:w-12 md:h-12 h-8 w-8" />
-        <Png class="md:w-12 md:h-12 h-8 w-8" />
-        <Svg class="md:w-12 md:h-12 h-8 w-8" />
-        <Pdf class="md:w-12 md:h-12 h-8 w-8" />
-        <Csv class="md:w-12 md:h-12 h-8 w-8" />
-        <Doc class="md:w-12 md:h-12 h-8 w-8" />
-        <Xls class="md:w-12 md:h-12 h-8 w-8" />
-        <Ppt class="md:w-12 md:h-12 h-8 w-8" />
-        <Txt class="md:w-12 md:h-12 h-8 w-8" />
-        <Json class="md:w-12 md:h-12 h-8 w-8" />
-        <Zip class="md:w-12 md:h-12 h-8 w-8" />
-        <Gen class="md:w-12 md:h-12 h-8 w-8" />
+        <Jpg class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Png class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Svg class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Pdf class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Csv class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Doc class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Xls class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Ppt class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Txt class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Json class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Zip class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
+        <Gen class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
       </div>
 
-      <p class="text-center text-gray-200 my-5">&copy;Erajaya Swasembada {{new Date().getFullYear()}}</p>
+      <p class="text-center text-gray-200 my-5 lg:mt-20">&copy;Erajaya Swasembada {{new Date().getFullYear()}}</p>
     </div>
   </div>
 </template>
