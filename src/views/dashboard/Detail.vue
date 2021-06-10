@@ -1,10 +1,12 @@
 <template>
    <div class="sm:px-6 lg:px-8 flex flex-col h-full max-w-screen-2xl mx-auto relative">
      <!-- Uploading / Downloading Indicator -->
-     <div v-if="isUploading || isDownloading || isDeleteProcess" class="absolute bottom-5 font-semibold rounded-md right-5 z-10 w-52 h-14 shadow-xl px-4 flex items-center border bg-white">
-       <p>{{ isUploading ? "Uploading" : isDeleteProcess ? "Deleting" :"Downloading" }}</p>
-       <Loader />
-     </div>
+     <teleport to="#modal-teleport">
+      <div v-if="isUploading || isDownloading || isDeleteProcess" class="absolute bottom-5 font-semibold rounded-md right-5 z-10 w-52 h-14 shadow-xl px-4 flex items-center border bg-white">
+        <p>{{ isUploading ? "Uploading" : isDeleteProcess ? "Deleting" :"Downloading" }}</p>
+        <Loader />
+      </div>
+     </teleport>
 
      <div class="flex-none flex-shrink-0 h-32 border-b">
       <div class="lg:px-6 px-4 pb-2 flex justify-between items-center border-b border-gray-200">
@@ -143,7 +145,7 @@
               </svg>
             </button>
 
-            <!-- Show Directory -->
+            <!-- Show Directory List Display -->
             <p v-if="directories.length && !isRecursiveFolder && !onSearhing" class="px-4 text-sm">Folders</p>
             <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full nv-transition p-2 sm:p-4 space-y-1">
               <ObjectFileCardFlex 
@@ -157,11 +159,25 @@
               />
             </div>
 
-            <!-- Show File -->
+            <!-- Show File List Display-->
             <p v-if="objects.length && !onSearhing" class="px-4">Files</p>
             <div v-if="objects.length && !onSearhing" class="w-full nv-transition p-2 sm:p-4 space-y-1">
               <ObjectFileCardFlex 
                 v-for="(object, idx) in objects" 
+                :key="idx" 
+                :object="object"
+                :isRecursiveFolder="isRecursiveFolder"
+                :bucket="$route.params.bucketName"
+                @on-show-preview="showSingle(object.objectName)"
+                @on-load-bucket-object-path="onLoadBucketObjectListPath"
+              />
+            </div>
+
+             <!-- Show Filter List Display-->
+            <p v-if="onSearhing" class="px-4">Relevance</p>
+            <div v-if="onSearhing" class="w-full nv-transition p-2 sm:p-4 space-y-1">
+              <ObjectFileCardFlex 
+                v-for="(object, idx) in dataObjectList"
                 :key="idx" 
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
@@ -209,28 +225,35 @@
       </div>
    </div>
    <!-- Modal Delete Bucket -->
-   <ModalDeleteBucket 
-      :open="openModal" 
-      @close-modal="openModal= false" 
-      :isEmpty="checkIsEmpty"
-      :bucketNameToDelete="$route.params.bucketName"
-   />
 
-    <!-- Modal Delete Object Confirmation -->
-   <ModalDeleteObjectConfirm
-      :open="isDeleteConfim" 
-      @close-modal="isCancelDeleteConfirm"
+  <teleport to="#modal-teleport">
+    <ModalDeleteBucket 
+        :open="openModal" 
+        @close-modal="openModal= false" 
+        :isEmpty="checkIsEmpty"
+        :bucketNameToDelete="$route.params.bucketName"
     />
+  </teleport>
+
+   <!-- Modal Delete Object Confirmation -->
+   <teleport  to="#modal-teleport">
+      <ModalDeleteObjectConfirm
+          :open="isDeleteConfim" 
+          @close-modal="isCancelDeleteConfirm"
+      />
+   </teleport>
 
     <!-- Preview Component -->
-    <VueEasyLightbox
-      scrollDisabled
-      escDisabled
-      :visible="visible"
-      :imgs="imgs"
-      :index="index"
-      @hide="handleHide"
-    />
+    <teleport  to="#modal-teleport">
+      <VueEasyLightbox
+        scrollDisabled
+        escDisabled
+        :visible="visible"
+        :imgs="imgs"
+        :index="index"
+        @hide="handleHide"
+      />
+    </teleport>
    
 </template>
 

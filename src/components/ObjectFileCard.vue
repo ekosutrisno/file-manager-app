@@ -15,15 +15,20 @@
    <Svg1 v-if="object.dir" class="absolute -top-1 right-0"/>
    <Svg2 v-else class="absolute -top-1 right-0"/>
    
+   <div v-if="!object.dir" class="flex items-start absolute top-1.5 right-2">
+      <div class="flex items-center h-5">
+         <input id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+      </div>
+   </div>
    <!-- End Decorate -->
 
    <div class="">
       <div class="flex items-center">
-         <p @click="emitObjectListPath(object.objectName)" v-if="object.dir" class="inline w-full z-10 focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
+         <p @click="emitObjectListPath(object.objectName)" v-if="object.dir" class="inline w-1/2 z-10 focus:outline-none cursor-pointer font-semibold flex-1 truncate hover:underline hover:text-indigo-600">
             {{object.objectName}}
          </p>
          <span v-else class="font-semibold flex-1 w-0 truncate">
-            {{object.objectName}}
+            {{formatObjectName(object.objectName)}}
          </span>
       </div>
       <div class="inline-flex items-center space-x-1 text-xs">
@@ -163,6 +168,10 @@ export default {
          return  moment(date).format('lll');
       }
 
+      const formatObjectName = (objectName)=>{
+         return state.path.length > 0 ? objectName.replace(state.path, "") : "";
+      }
+
       /**
       * Format Size file function
       */
@@ -198,6 +207,7 @@ export default {
          checkFileExt,
          emitObjectListPath,
          formatDateModified,
+         formatObjectName,
          onDownloadObject,
          onDeleteObject,
          onShowPreview,

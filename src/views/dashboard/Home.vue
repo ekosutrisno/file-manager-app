@@ -49,11 +49,12 @@
     </div>
   </div>
 </div>
-
-  <ModalCreateBucket 
-    :open="openModal" 
-    @close-modal="openModal = false" 
-  />
+ <teleport  to="#modal-teleport">
+    <ModalCreateBucket 
+      :open="openModal" 
+      @close-modal="openModal = false" 
+    />
+ </teleport>
 </template>
 
 <script>

@@ -21,6 +21,7 @@ const toastOptions = {
 };
 
 import VueEasyLightbox from "vue-easy-lightbox";
+import VueClickAway from "vue3-click-away";
 
 const updateSW = registerSW({
   onNeedRefresh() {
@@ -37,5 +38,6 @@ const app = createApp(App);
 app.use(router);
 app.use(store);
 app.use(VueEasyLightbox)
+app.use(VueClickAway)
 app.use(Toast, toastOptions);
 app.mount("#app");

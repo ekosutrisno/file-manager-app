@@ -15,9 +15,10 @@ const object_module = {
   namespaced: true,
   state() {
     return {
-      allObjects:[],
+      allObjects: [],
       objects: [],
       directories: [],
+      selectedObject: [],
       objectToDelete: {},
       path: "",
       urlPreview: "",
@@ -35,6 +36,9 @@ const object_module = {
     },
     SET_ALL_OBJECT: (state, payload) => {
       state.allObjects = payload;
+    },
+    SET_SELECTED_OBJECT: (state, payload) => {
+      state.selectedObject.push(payload);
     },
     SET_DIRECTORIES: (state, payload) => {
       state.directories = payload;
@@ -257,6 +261,10 @@ const object_module = {
           }
         })
         .catch((err) => console.log(err));
+    },
+
+    setSelectedObject({ commit }, objectPayload) {
+      commit("SET_SELECTED_OBJECT", objectPayload);
     },
 
     setPath({ commit }, path) {
