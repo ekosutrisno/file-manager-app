@@ -13,6 +13,7 @@ const display_moduel = {
   actions: {
     onChangeDisplay({ commit }, display) {
       commit("SET_DISPLAY", display);
+      localStorage.setItem('display', display);
     },
   },
 };

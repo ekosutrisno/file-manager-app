@@ -17,7 +17,7 @@
    
    <div v-if="!object.dir" class="flex items-start absolute top-1.5 right-2">
       <div class="flex items-center h-5">
-         <input id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+         <input @change="onChangeSelect(object)" id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
       </div>
    </div>
    <!-- End Decorate -->
@@ -168,8 +168,18 @@ export default {
          return  moment(date).format('lll');
       }
 
+      /**
+       * On Selected Action
+       */
+      const onChangeSelect = ( object ) => {
+         store.dispatch('object_module/setSelectedObject', object);
+      }
+
+      /**
+      * Format object Name and remove base path
+      */
       const formatObjectName = (objectName)=>{
-         return state.path.length > 0 ? objectName.replace(state.path, "") : "";
+         return state.path.length > 0 ? objectName.replace(state.path, "") : objectName;
       }
 
       /**
@@ -213,6 +223,7 @@ export default {
          onShowPreview,
          formatBytes,
          onDeleteDir,
+         onChangeSelect
       }
    }
 }

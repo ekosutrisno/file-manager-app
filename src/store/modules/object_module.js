@@ -38,7 +38,9 @@ const object_module = {
       state.allObjects = payload;
     },
     SET_SELECTED_OBJECT: (state, payload) => {
-      state.selectedObject.push(payload);
+     var data = state.objects.filter((obj) => obj.eTag === payload.eTag);
+     data[0].deleteMarker = true;
+     state.selectedObject.push(data);
     },
     SET_DIRECTORIES: (state, payload) => {
       state.directories = payload;
@@ -70,6 +72,11 @@ const object_module = {
     SET_OBJECT_TO_DELETE: (state, payload) => {
       state.objectToDelete = payload;
     },
+  },
+  getters:{
+    getSelectedObject(state){
+      return state.selectedObject.length;
+    }
   },
   actions: {
     /**

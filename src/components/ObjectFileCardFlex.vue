@@ -23,7 +23,7 @@
             {{object.objectName}}
          </p>
          <span v-else class="flex-1 w-0 truncate">
-            {{object.objectName}}
+            {{formatObjectName(object.objectName)}}
          </span>
        
       </div>
@@ -185,6 +185,13 @@ export default {
       }
 
       /**
+      * Format object Name and remove base path
+      */
+      const formatObjectName = (objectName)=>{
+         return state.path.length > 0 ? objectName.replace(state.path, "") : objectName;
+      }
+
+      /**
       * Format Size file function
       */
       const formatBytes = (bytes, decimals = 2)=> {
@@ -228,7 +235,8 @@ export default {
          onShowPreview,
          formatBytes,
          onDeleteDir,
-         manageOptionShow
+         manageOptionShow,
+         formatObjectName
       }
    }
 }
