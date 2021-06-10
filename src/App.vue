@@ -2,17 +2,12 @@
   <router-view></router-view>
 </template>
 <script>
-import { onMounted } from 'vue'
-import { useStore } from 'vuex'
 export default {
-  setup() {
-    const store = useStore()
-    onMounted(() => store.dispatch('display_module/onChangeDisplay', 'list'));
-  },
-}
+  setup() {},
+};
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap");
 
 .nv-transition {
   animation: 0.5s appear;

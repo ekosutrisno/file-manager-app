@@ -44,6 +44,7 @@
           </button>
         </div>
       </div>
+      
       <div class="py-4 px-4 md:px-10 flex items-center justify-between">
         <p class="hidden md:inline-flex items-center text-sm">
           <span class="cursor-pointer text-indigo-400 hover:text-indigo-800" @click="onLoadBucketObjectList">
@@ -79,7 +80,7 @@
               </label>
           </button>
           <button @click="onChangeDisplay" class="ml-2 cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-            <svg v-if="display === 'block'" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg v-if="display === 'list'" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
             <svg v-else xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-5 hi w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -88,7 +89,32 @@
           </button>
         </div>
       </div>
+
+      <transition
+          enter-active-class="transition ease-out duration-100 transform"
+          enter-from-class="opacity-0 scale-95"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition ease-in duration-75 transform"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-95"
+      >
+        <div v-if="countSelected" class="p-2 flex items-center justify-between bg-white shadow-2xl border h-16 z-20 right-5 md:right-10 absolute w-2/3 md:w-2/5 rounded-md">
+          <div>
+            <span class="text-sm">Selected items </span>
+            <span class="font-semibold">{{countSelected}}</span>
+          </div>
+          <div>
+            <button @click="deleteMultiple" class="ml-2 inline-flex items-center space-x-2 cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+              <span>Delete</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </transition>
      </div>
+
       <div class="py-2 px-2 md:px-6 flex-1 overflow-y-auto on-scrollbar">
           <div v-if="display === 'block'" class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
             <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium hover:text-white text-indigo-600 transition-colors hover:bg-indigo-500 focus:outline-none">
@@ -295,6 +321,8 @@ export default {
        prefixPath: '',
        fileList: [],
        filterObject: '',
+       countSelected: computed(()=> store.state.object_module.selectedObject.length),
+       selectedObject: computed(()=> store.state.object_module.selectedObject),
        display: computed(()=> store.state.display_module.display),
        allObjects: computed(()=> store.state.object_module.allObjects),
        path: computed(()=> store.state.object_module.path),
@@ -359,6 +387,30 @@ export default {
          onUploadMultipleFile(fileToUpload);
        }
       }
+
+    /**
+     * Delete Multiple Action
+     */
+      const deleteMultiple = async () =>{
+        var bucketName = route.params.bucketName;
+        
+        await store.dispatch("object_module/setIsDeleteConfirm", true);
+        state.selectedObject.forEach( async obj =>{
+
+          var dataPayload ={
+            bucketName: bucketName,
+            objectName: obj.objectName,
+            isRecursiveFolder: obj.isRecursiveFolder,
+            path: state.path,
+            isDirectory: false
+          }
+          
+          await store.dispatch("object_module/setObjectToDelete", dataPayload);
+        });
+
+        store.dispatch("object_module/clearSelectedObject", []);
+      }
+
 
     /**
      * Upload Multiple File Handler
@@ -473,7 +525,8 @@ export default {
       dragover,
       dragleave,
       drop,
-      onChangeDisplay
+      onChangeDisplay,
+      deleteMultiple
     }
    }
 }

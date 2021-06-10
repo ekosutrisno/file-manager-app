@@ -37,10 +37,21 @@ const object_module = {
     SET_ALL_OBJECT: (state, payload) => {
       state.allObjects = payload;
     },
+    CLEAR_SELECTED_OBJECT:(state, data) =>{
+      state.selectedObject = data;
+    },
     SET_SELECTED_OBJECT: (state, payload) => {
-     var data = state.objects.filter((obj) => obj.eTag === payload.eTag);
-     data[0].deleteMarker = true;
-     state.selectedObject.push(data);
+      var data = state.selectedObject.filter(
+        (obj) => obj.objectName === payload.objectName
+      );
+
+      if (data.length == 0) {
+        payload.deleteMarker = true;
+        state.selectedObject.push(payload);
+      } else {
+        var idx = state.selectedObject.indexOf(data[0]);
+        state.selectedObject.splice(idx, 1);
+      }
     },
     SET_DIRECTORIES: (state, payload) => {
       state.directories = payload;
@@ -72,11 +83,6 @@ const object_module = {
     SET_OBJECT_TO_DELETE: (state, payload) => {
       state.objectToDelete = payload;
     },
-  },
-  getters:{
-    getSelectedObject(state){
-      return state.selectedObject.length;
-    }
   },
   actions: {
     /**
@@ -228,6 +234,7 @@ const object_module = {
         })
         .catch((err) => console.log(err));
     },
+
     /**
      * Delete Object as Directory
      * @param  {} {dispatch}
@@ -268,6 +275,10 @@ const object_module = {
           }
         })
         .catch((err) => console.log(err));
+    },
+
+    clearSelectedObject({commit}, data){
+      commit("CLEAR_SELECTED_OBJECT", data);
     },
 
     setSelectedObject({ commit }, objectPayload) {
