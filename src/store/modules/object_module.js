@@ -22,6 +22,7 @@ const object_module = {
       objectToDelete: {},
       path: "",
       urlPreview: "",
+      isOnSelect: false,
       isProcess: false,
       isUploading: false,
       isDownloading: false,
@@ -37,8 +38,11 @@ const object_module = {
     SET_ALL_OBJECT: (state, payload) => {
       state.allObjects = payload;
     },
-    CLEAR_SELECTED_OBJECT:(state, data) =>{
+    CLEAR_SELECTED_OBJECT: (state, data) => {
       state.selectedObject = data;
+    },
+    SET_IS_ON_SELECT: (state, data) => {
+      state.isOnSelect = data;
     },
     SET_SELECTED_OBJECT: (state, payload) => {
       var data = state.selectedObject.filter(
@@ -277,12 +281,17 @@ const object_module = {
         .catch((err) => console.log(err));
     },
 
-    clearSelectedObject({commit}, data){
+    clearSelectedObject({ commit }, data) {
       commit("CLEAR_SELECTED_OBJECT", data);
     },
 
     setSelectedObject({ commit }, objectPayload) {
       commit("SET_SELECTED_OBJECT", objectPayload);
+    },
+
+    setIsOnSelect({ state, commit }) {
+      var status = state.isOnSelect = !state.isOnSelect
+      commit("SET_IS_ON_SELECT", status);
     },
 
     setPath({ commit }, path) {
@@ -308,9 +317,11 @@ const object_module = {
     setIsDeleteProcess({ commit }, status) {
       commit("SET_IS_DELETE_PROCESS", status);
     },
+
     setIsDeleteConfirm({ commit }, status) {
       commit("SET_IS_DELETE_CONFIRM", status);
     },
+
     setObjectToDelete({ commit }, payload) {
       commit("SET_OBJECT_TO_DELETE", payload);
     },

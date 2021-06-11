@@ -5,7 +5,6 @@
         <div class="font-semibold text-3xl">
           <span class="text-indigo-400">Li</span>
           <span class="text-indigo-50">Box</span>
-          <!-- <span class="text-xs text-indigo-50 hidden md:inline">.erajaya.com</span> -->
         </div>
         <div class="flex items-center md:divide-x-2 space-x-3">
           <router-link

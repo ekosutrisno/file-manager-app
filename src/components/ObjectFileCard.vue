@@ -3,9 +3,7 @@
    <!-- Decorate -->
    <div :class="[object.dir ? 'bg-indigo-400 opacity-30 w-28 h-28 -bottom-10 -left-12': '']" class="rounded-full absolute"></div>
    <div :class="[object.dir ? 'text-indigo-600': 'text-green-600']" class="absolute bottom-2 left-2 text-xs font-semibold">
-      <svg v-if="object.dir" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-      </svg>
+      <FolderBlue class="h-10 w-10" v-if="object.dir"/>
       <FileExtentionType
          v-else
          :extention="checkFileExt(object.objectName)"
@@ -15,7 +13,7 @@
    <Svg1 v-if="object.dir" class="absolute -top-1 right-0"/>
    <Svg2 v-else class="absolute -top-1 right-0"/>
    
-   <div v-if="!object.dir" class="flex items-start absolute top-1.5 right-2">
+   <div v-if="!object.dir && isOnSelect" class="flex items-start absolute top-1.5 right-2">
       <div class="flex items-center h-5">
          <input @change="onChangeSelect(object)" id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
       </div>
@@ -64,6 +62,7 @@ import { useStore } from 'vuex';
 import { computed, reactive, toRefs } from '@vue/runtime-core';
 import ModalDeleteObjectConfirm from './ModalDeleteObjectConfirm.vue';
 import FileExtentionType from './FileExtentionType.vue';
+import FolderBlue from './svg/FolderBlue.vue';
 
 /**
  * @author Eko Sutrisno
@@ -74,6 +73,7 @@ export default {
      Svg2, 
      ModalDeleteObjectConfirm,
      FileExtentionType,
+    FolderBlue,
    },
    props:{
       object:{
@@ -94,6 +94,7 @@ export default {
       const store = useStore();
       const state = reactive({
          path: computed(()=> store.state.object_module.path),
+         isOnSelect: computed(()=> store.state.object_module.isOnSelect),
       });
 
       /**

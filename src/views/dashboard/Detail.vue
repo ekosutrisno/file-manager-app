@@ -137,7 +137,15 @@
             </div>
 
             <!-- Show File -->
-            <p v-if="objects.length && !onSearhing" class="px-4">Files</p>
+            <div class="flex items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
+              <span>Files</span> 
+              <div  class="flex items-start">
+                  <div class="flex items-center h-5 space-x-2">
+                    <p>Show Check</p>
+                    <input @change="onShowChekMarker" id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                  </div>
+              </div>
+            </div>
             <div v-if="objects.length && !onSearhing" class="w-full nv-transition p-2 sm:p-4 gap-2 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               <ObjectFileCard 
                 v-for="(object, idx) in objects" 
@@ -186,7 +194,15 @@
             </div>
 
             <!-- Show File List Display-->
-            <p v-if="objects.length && !onSearhing" class="px-4">Files</p>
+            <div class="flex items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
+              <span>Files</span> 
+              <div  class="flex items-start">
+                  <div class="flex items-center h-5 space-x-2">
+                    <p>Show Check</p>
+                    <input @change="onShowChekMarker" id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                  </div>
+              </div>
+            </div>
             <div v-if="objects.length && !onSearhing" class="w-full nv-transition p-2 sm:p-4 space-y-1">
               <ObjectFileCardFlex 
                 v-for="(object, idx) in objects" 
@@ -508,6 +524,10 @@ export default {
       store.dispatch("display_module/onChangeDisplay", displayPayload);
     }
 
+    const onShowChekMarker = () =>{
+      store.dispatch("object_module/setIsOnSelect");
+    }
+
     return {
       ...toRefs(state),
       openModal,
@@ -526,7 +546,8 @@ export default {
       dragleave,
       drop,
       onChangeDisplay,
-      deleteMultiple
+      deleteMultiple,
+      onShowChekMarker
     }
    }
 }

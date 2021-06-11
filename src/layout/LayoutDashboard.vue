@@ -7,7 +7,12 @@
             <div class="flex items-center justify-between h-16">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
-                  <img  class="h-8 w-8 cursor-pointer" @click="$router.push('/')" src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg" alt="Workflow" />
+                  <router-link to="/">
+                    <div class="font-semibold text-2xl">
+                      <span class="text-indigo-400">Li</span>
+                      <span class="text-indigo-50">Box</span>
+                    </div>
+                  </router-link>
                 </div>
                 <div class="hidden md:block">
                   <div class="ml-10 flex items-baseline space-x-4">

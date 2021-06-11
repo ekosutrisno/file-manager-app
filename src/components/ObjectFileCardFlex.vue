@@ -8,7 +8,7 @@
 
    <div class="flex items-center justify-between">
       <div class="flex items-center w-full md:w-1/2">
-          <div class="flex items-start">
+          <div v-if="!object.dir && isOnSelect" class="flex items-start">
             <div class="flex items-center h-5">
                <input @change="onChangeSelect(object)" id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
             </div>
@@ -109,6 +109,7 @@ export default {
       const store = useStore();
       const state = reactive({
          path: computed(()=> store.state.object_module.path),
+         isOnSelect: computed(()=> store.state.object_module.isOnSelect),
          isOpenOption: false
       });
 

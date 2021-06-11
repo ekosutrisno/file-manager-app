@@ -2,7 +2,7 @@ const display_moduel = {
   namespaced: true,
   state() {
     return {
-      display: "block",
+      display: "list",
     };
   },
   mutations: {
