@@ -98,16 +98,22 @@
           leave-from-class="opacity-100 scale-100"
           leave-to-class="opacity-0 scale-95"
       >
-        <div v-if="countSelected" class="p-2 flex items-center justify-between bg-white shadow-2xl border h-16 z-20 right-5 md:right-10 absolute w-2/3 md:w-2/5 rounded-md">
+      
+        <div v-if="countSelected" class="py-2 px-4 flex items-center justify-between bg-white shadow-2xl border h-16 z-20 right-5 md:right-10 absolute w-2/3 md:w-2/5 rounded-md">
           <div>
-            <span class="text-sm">Selected items </span>
+            <span class="text-sm">Items </span>
             <span class="font-semibold">{{countSelected}}</span>
           </div>
-          <div>
+          <div class="inline-flex items-center space-x-2">
             <button @click="deleteMultiple" class="ml-2 inline-flex items-center space-x-2 cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
               <span>Delete</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+            <button @click="clearSelectedItems" class="ml-2 inline-flex items-center space-x-2 cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
@@ -142,7 +148,7 @@
               <div  class="flex items-start">
                   <div class="flex items-center h-5 space-x-2">
                     <p>Show Check</p>
-                    <input @change="onShowChekMarker" id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                    <input  @change="onShowChekMarker" id="on-show" :checked="isOnSelect" name="on-show" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
                   </div>
               </div>
             </div>
@@ -193,13 +199,13 @@
               />
             </div>
 
-            <!-- Show File List Display-->
+            <!-- Show File Display List -->
             <div class="flex items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
               <span>Files</span> 
               <div  class="flex items-start">
                   <div class="flex items-center h-5 space-x-2">
                     <p>Show Check</p>
-                    <input @change="onShowChekMarker" id="candidates" name="candidates" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                    <input  @change="onShowChekMarker" id="on-show-list" :checked="isOnSelect" name="on-show-list" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
                   </div>
               </div>
             </div>
@@ -337,7 +343,7 @@ export default {
        prefixPath: '',
        fileList: [],
        filterObject: '',
-       countSelected: computed(()=> store.state.object_module.selectedObject.length),
+       countSelected: computed(()=> store.state.object_module.objects.filter(o => o.deleteMarker).length),
        selectedObject: computed(()=> store.state.object_module.selectedObject),
        display: computed(()=> store.state.display_module.display),
        allObjects: computed(()=> store.state.object_module.allObjects),
@@ -345,6 +351,7 @@ export default {
        objects: computed(()=> store.state.object_module.objects),
        directories: computed(()=> store.state.object_module.directories),
        isRecursiveFolder: computed(()=> store.state.object_module.isRecursiveFolder),
+       isOnSelect: computed(()=> store.state.object_module.isOnSelect),
        isProcess: computed(()=> store.state.object_module.isProcess),
        isUploading: computed(()=> store.state.object_module.isUploading),
        isDownloading: computed(()=> store.state.object_module.isDownloading),
@@ -410,21 +417,14 @@ export default {
       const deleteMultiple = async () =>{
         var bucketName = route.params.bucketName;
         
-        await store.dispatch("object_module/setIsDeleteConfirm", true);
-        state.selectedObject.forEach( async obj =>{
-
-          var dataPayload ={
+        var dataPayload ={
             bucketName: bucketName,
-            objectName: obj.objectName,
-            isRecursiveFolder: obj.isRecursiveFolder,
+            isRecursiveFolder: state.isRecursiveFolder,
             path: state.path,
             isDirectory: false
           }
-          
-          await store.dispatch("object_module/setObjectToDelete", dataPayload);
-        });
 
-        store.dispatch("object_module/clearSelectedObject", []);
+        await store.dispatch("object_module/onDeleteMultipleObject", dataPayload);
       }
 
 
@@ -450,10 +450,7 @@ export default {
                   url: URL
                 }
                 
-                await store.dispatch("object_module/onUploadObject", dataPayload)
-                      .then(()=>{
-                        console.log("file uploaded");
-                      });
+                await store.dispatch("object_module/onUploadObject", dataPayload);
             })
        }
        // Clean prefix path
@@ -524,8 +521,16 @@ export default {
       store.dispatch("display_module/onChangeDisplay", displayPayload);
     }
 
-    const onShowChekMarker = () =>{
-      store.dispatch("object_module/setIsOnSelect");
+    const onShowChekMarker = (e) =>{
+      if (e.target.checked) {
+        store.dispatch("object_module/setIsOnSelect", true);
+      }else {
+        store.dispatch("object_module/setIsOnSelect", false);
+      }
+    }
+
+    const clearSelectedItems = () =>{
+      store.dispatch("object_module/clearSelectedObject", []);
     }
 
     return {
@@ -547,7 +552,8 @@ export default {
       drop,
       onChangeDisplay,
       deleteMultiple,
-      onShowChekMarker
+      onShowChekMarker,
+      clearSelectedItems
     }
    }
 }

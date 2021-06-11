@@ -39,22 +39,19 @@ const object_module = {
       state.allObjects = payload;
     },
     CLEAR_SELECTED_OBJECT: (state, data) => {
-      state.selectedObject = data;
+      var objects = state.objects.filter((obj) => obj.deleteMarker);
+      objects.forEach((obj) => (obj.deleteMarker = false));
     },
     SET_IS_ON_SELECT: (state, data) => {
       state.isOnSelect = data;
     },
     SET_SELECTED_OBJECT: (state, payload) => {
-      var data = state.selectedObject.filter(
+      var data = state.objects.filter(
         (obj) => obj.objectName === payload.objectName
       );
-
-      if (data.length == 0) {
-        payload.deleteMarker = true;
-        state.selectedObject.push(payload);
-      } else {
-        var idx = state.selectedObject.indexOf(data[0]);
-        state.selectedObject.splice(idx, 1);
+      if (data.length > 0) {
+        var objectData = data[0];
+        objectData.deleteMarker = true;
       }
     },
     SET_DIRECTORIES: (state, payload) => {
@@ -125,14 +122,24 @@ const object_module = {
      * @param  {} data
      */
     setObjectDataPath({ commit, dispatch }, data) {
+      dispatch("setPath", data.path);
       dispatch("setIsProcess", true);
       dispatch("setIsRecursiveFolder", true);
-      dispatch("setPath", data.path);
 
       axios
         .get(`${baseURL}/object/${data.bucketName}/path?path=${data.path}`)
         .then((res) => {
-          commit("SET_OBJECTS", res.data);
+          commit("SET_ALL_OBJECT", res.data);
+
+          var dirList = []; // Filter Object type Directory
+          dirList = res.data.filter((file) => file.dir == true);
+
+          var fileList = []; // Filter Object type File
+          fileList = res.data.filter((file) => file.dir == false);
+
+          commit("SET_DIRECTORIES", dirList);
+          commit("SET_OBJECTS", fileList);
+
           dispatch("setIsProcess", false);
         })
         .catch((err) => console.log(err));
@@ -207,6 +214,7 @@ const object_module = {
         fileLink.click();
       });
     },
+
     /**
      * Delete Object Action
      * @param  {} {dispatch}
@@ -237,6 +245,49 @@ const object_module = {
           }
         })
         .catch((err) => console.log(err));
+    },
+
+    /**
+     * Delete Multiple Object Action
+     * @param  {} {dispatch}
+     * @param  {} dataPayload
+     */
+    async onDeleteMultipleObject({ state, dispatch }, dataPayload) {
+      var tempDataToDelete = state.objects.filter((obj) => obj.deleteMarker);
+
+      if (tempDataToDelete.length != 0) {
+        var stringObjectName = "";
+
+        tempDataToDelete.forEach((data, idx) => {
+          stringObjectName += idx > 0 ? "," + data.objectName : data.objectName;
+        });
+
+        dispatch("setIsDeleteConfirm", false);
+        dispatch("setIsDeleteProcess", true);
+
+        if (stringObjectName.trim().length > 0)
+          await axios
+            .delete(
+              `${baseURL}/object/multiple?bucket=${dataPayload.bucketName}&object=${stringObjectName}`
+            )
+            .then(() => {
+              if (!dataPayload.isRecursiveFolder) {
+                dispatch("setObjectData", dataPayload.bucketName);
+                dispatch("setIsDeleteProcess", false);
+                dispatch("setObjectToDelete", {});
+              } else {
+                var payload = {
+                  bucketName: dataPayload.bucketName,
+                  path: dataPayload.path,
+                };
+
+                dispatch("setObjectDataPath", payload);
+                dispatch("setIsDeleteProcess", false);
+                dispatch("setObjectToDelete", {});
+              }
+            })
+            .catch((err) => console.log(err));
+      }
     },
 
     /**
@@ -289,8 +340,7 @@ const object_module = {
       commit("SET_SELECTED_OBJECT", objectPayload);
     },
 
-    setIsOnSelect({ state, commit }) {
-      var status = state.isOnSelect = !state.isOnSelect
+    setIsOnSelect({ commit }, status) {
       commit("SET_IS_ON_SELECT", status);
     },
 
