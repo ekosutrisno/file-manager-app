@@ -2,15 +2,15 @@
    <div class="sm:px-6 lg:px-8 flex flex-col h-full max-w-screen-2xl mx-auto relative">
      <!-- Uploading / Downloading Indicator -->
      <teleport to="#modal-teleport">
-      <div v-if="isUploading || isDownloading || isDeleteProcess" class="absolute bottom-5 font-semibold rounded-md right-5 z-10 w-52 h-14 shadow-xl px-4 flex items-center border bg-white">
-        <p>{{ isUploading ? "Uploading" : isDeleteProcess ? "Deleting" :"Downloading" }}</p>
+      <div v-if="isUploading || isDownloading || isDeleteProcess"  class="absolute bottom-5 font-semibold font-quicksand rounded-md right-5 z-10 w-60 h-14 shadow-xl px-4 flex items-center border bg-white">
+        <p class="text-sm">{{ isUploading ? "Uploading "+ processStatus : isDeleteProcess ? "Deleting" :"Downloading" }}</p>
         <Loader />
       </div>
      </teleport>
 
      <div class="flex-none flex-shrink-0 h-32 border-b">
       <div class="lg:px-6 px-4 pb-2 flex justify-between items-center border-b border-gray-200">
-        <router-link to="/u/dashboard" class="flex items-center space-x-1 justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
+        <router-link to="/u/dashboard" class="flex items-center mr-2 justify-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
           <span class="hidden md:block">
               Back
           </span>
@@ -57,7 +57,7 @@
         <div class="flex items-center sm:justify-end">
           <div class="mr-2">
             <label for="bucket-name" class="sr-only">Bucket Name</label>
-            <input id="bucket-name" v-model="prefixPath" name="bucket-name" type="text" autocomplete="off" class="appearance-none relative block w-full px-3 py-1.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Add Folder" />
+            <input id="bucket-name" v-model="prefixPath" name="bucket-name" type="text" autocomplete="off" class="appearance-none relative block w-32 md:w-full px-3 py-1.5 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Add Folder" />
           </div>
           <button class="focus:outline-none">
             <label for="file-upload" class="relative cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
@@ -143,7 +143,7 @@
             </div>
 
             <!-- Show File -->
-            <div class="flex items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
+            <div class="flex mt-5 mb-3 items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
               <span>Files</span> 
               <div  class="flex items-start">
                   <div class="flex items-center h-5 space-x-2">
@@ -187,7 +187,7 @@
 
             <!-- Show Directory List Display -->
             <p v-if="directories.length && !isRecursiveFolder && !onSearhing" class="px-4 text-sm">Folders</p>
-            <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full nv-transition p-2 sm:p-4 space-y-1">
+            <div v-if="directories.length && !isRecursiveFolder && !onSearhing" class="w-full lg:grid lg:grid-cols-2 lg:gap-2 nv-transition p-2 sm:p-4 space-y-1 lg:space-y-0">
               <ObjectFileCardFlex 
                 v-for="(object, idx) in directories" 
                 :key="idx" 
@@ -200,7 +200,7 @@
             </div>
 
             <!-- Show File Display List -->
-            <div class="flex items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
+            <div class="flex mt-5 mb-3 items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
               <span>Files</span> 
               <div  class="flex items-start">
                   <div class="flex items-center h-5 space-x-2">
@@ -243,7 +243,7 @@
               <Loader/>
               <p>Fetching Object</p>
             </div>
-            <div @dragover="dragover" @dragleave="dragleave" @drop="drop" class="mt-1 max-w-lg mx-auto flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition-colors">
+            <div @dragover="dragover" @dragleave="dragleave" @drop="drop" class="mt-1 max-w-lg mx-auto hidden sm:flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition-colors">
               <div class="space-y-1 text-center">
                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                   <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -357,6 +357,7 @@ export default {
        isDownloading: computed(()=> store.state.object_module.isDownloading),
        isDeleteConfim: computed(()=> store.state.object_module.isDeleteConfim),
        isDeleteProcess: computed(()=> store.state.object_module.isDeleteProcess),
+       processStatus: computed(()=> store.state.object_module.processStatus),
      })
 
      const isCancelDeleteConfirm = async () =>{

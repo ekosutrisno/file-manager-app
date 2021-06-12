@@ -33,17 +33,17 @@
             <span>{{ formatDateModified(object.lastModified) }} </span>
          </div>
          <div class="z-10 relative">
-            <svg xmlns="http://www.w3.org/2000/svg" @click="manageOptionShow" class="h-5 w-5 text-gray-500 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" @click="manageOptionShow" class="h-5 w-5 text-gray-500 md:cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
             </svg>
             
             <transition
-               enter-active-class="transition ease-out duration-100 transform"
-               enter-from-class="opacity-0 scale-95"
-               enter-to-class="opacity-100 scale-100"
-               leave-active-class="transition ease-in duration-75 transform"
-               leave-from-class="opacity-100 scale-100"
-               leave-to-class="opacity-0 scale-95"
+               enter-active-class="transition ease-out duration-100" 
+               enter-from-class="transform opacity-0 scale-95" 
+               enter-to-class="transform opacity-100 scale-100" 
+               leave-active-class="transition ease-in duration-75" 
+               leave-from-class="transform opacity-100 scale-100" 
+               leave-to-class="transform opacity-0 scale-95"
             >
                <!-- Options -->
                <div v-click-away="manageOptionShow" v-if="isOpenOption" class="inline-flex w-auto items-center justify-around space-x-2 absolute p-2 bg-white right-5 top-0 shadow-xl border rounded-md">

@@ -22,6 +22,7 @@ const object_module = {
       objectToDelete: {},
       path: "",
       urlPreview: "",
+      processStatus: 0,
       isOnSelect: false,
       isProcess: false,
       isUploading: false,
@@ -56,6 +57,9 @@ const object_module = {
     },
     SET_DIRECTORIES: (state, payload) => {
       state.directories = payload;
+    },
+    SET_PROCCESS_STATUS: (state, payload) => {
+      state.processStatus = payload;
     },
     SET_PATH: (state, payload) => {
       state.path = payload;
@@ -150,13 +154,18 @@ const object_module = {
      * @param  {} {dispatch}
      * @param  {} dataPayload
      */
-    onUploadObject({ dispatch }, dataPayload) {
+    onUploadObject({ commit, dispatch }, dataPayload) {
       dispatch("setIsUploading", true);
 
       axios
         .post(dataPayload.url, dataPayload.formData, {
           headers: {
             "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            var complete =
+              (((progressEvent.loaded / progressEvent.total) * 100) | 0) + "%";
+            commit("SET_PROCCESS_STATUS", complete);
           },
         })
         .then(() => {
