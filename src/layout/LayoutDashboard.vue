@@ -99,7 +99,7 @@
           </DisclosurePanel>
         </Disclosure>
       </div>
-      <main class="flex-1 h-full overflow-y-auto py-2 nv-transition">
+      <main class="flex-1 h-full overflow-y-auto py-2 nv-transition on-scrollbar">
           <router-view ></router-view>
       </main>
     </div>
