@@ -8,6 +8,7 @@ import router from "./router";
 import store from "./store";
 import App from "./App.vue";
 import "./index.css";
+import directives from "./drectives";
 
 /**
  * Dependency Import
@@ -34,6 +35,9 @@ const updateSW = registerSW({
 
 
 const app = createApp(App);
+
+// Use Directive and Register Global
+directives(app);
 
 app.use(router);
 app.use(store);
