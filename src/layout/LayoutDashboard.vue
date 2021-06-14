@@ -39,7 +39,7 @@
                     <div>
                       <MenuButton class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                         <span class="sr-only">Open user menu</span>
-                        <img class="h-8 w-8 rounded-full" src="https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/bear_russian_animal_avatar-128.png" alt="" />
+                        <img class="h-8 w-8 rounded-full" src="/img/icons/favicon-32x32.png" alt="" />
                       </MenuButton>
                     </div>
                     <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
@@ -79,7 +79,7 @@
             <div class="pt-4 pb-3 border-t border-gray-700">
               <div class="flex items-center px-5">
                 <div class="flex-shrink-0">
-                  <img class="h-10 w-10 rounded-full" src="https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/bear_russian_animal_avatar-128.png" alt="" />
+                  <img class="h-10 w-10 rounded-full" src="/img/icons/favicon-32x32.png" alt="avatar" />
                 </div>
                 <div class="ml-3">
                   <div class="text-base font-medium leading-none text-white">Tom Cook</div>
@@ -93,7 +93,7 @@
                 </button>
               </div>
               <div class="mt-3 px-2 space-y-1">
-                <a v-for="(item, idx) in profile" :key="idx" href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">{{ item.nav }}</a>
+                <router-link v-for="(item, idx) in profile" :key="idx" :to="item.to" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">{{ item.nav }}</router-link>
               </div>
             </div>
           </DisclosurePanel>

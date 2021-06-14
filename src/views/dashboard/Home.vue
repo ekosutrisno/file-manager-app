@@ -1,7 +1,7 @@
 <template>
 <div class="flex flex-col h-full">
   <div class="flex-none h-36 flex-shrink-0 border-b">
-    <header class="bg-white shadow sm:px-6 lg:px-8">
+    <header class="bg-white border-b sm:px-6 lg:px-8">
       <div class="max-w-7xl flex items-center justify-between mx-auto pb-2 px-4 sm:px-6 lg:px-8">
         <h1 class="md:text-xl font-bold text-gray-900 text-sm">
           <router-link to="/u/dashboard/">

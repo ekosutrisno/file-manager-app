@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white shadow sm:px-6 lg:px-8 sticky z-10 top-0">
+  <header class="bg-white shadow sm:px-6 lg:px-8 sticky z-10 -top-2">
     <div class="max-w-7xl flex items-center justify-between mx-auto pb-2 px-4 sm:px-6 lg:px-8">
       <h1 class="text-xl font-bold text-gray-900">
         <router-link to="#">

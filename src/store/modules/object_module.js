@@ -52,7 +52,8 @@ const object_module = {
       );
       if (data.length > 0) {
         var objectData = data[0];
-        objectData.deleteMarker = true;
+        if (objectData.deleteMarker) objectData.deleteMarker = false;
+        else objectData.deleteMarker = true;
       }
     },
     SET_DIRECTORIES: (state, payload) => {
