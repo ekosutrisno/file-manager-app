@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white shadow sm:px-6 lg:px-8 sticky z-10 top-0">
+  <header class="bg-white shadow sm:px-6 lg:px-8 z-10 top-0">
     <div class="max-w-7xl flex items-center justify-between mx-auto pb-2 px-4 sm:px-6 lg:px-8">
       <h1 class="text-xl font-bold text-gray-900">
         <router-link to="#">
@@ -30,24 +30,62 @@ import { ref } from 'vue';
 import ModalAddTeam from '../../components/ModalAddTeam.vue';
 import TeamCard from '../../components/TeamCard.vue'
 
+// &auto=format&fit=facearea&facepad=4&w=256&h=256&q=60
+
 const people = [
-  { id:'ef20b245-6286-42cd-9974-2a1740ea1447',
-    name: 'Miaw Unyu',
-    title: 'UI/UX',
-    department: 'Optimization',
-    role: 'Admin',
-    email: 'miaw.unyu@example.com',
+  { id:'97f2b1ee-3826-4524-a069-a774341c7f13',
+    name: 'Christiawan Apriliyanto',
+    title: 'Manager',
+    department: 'IT Architect',
+    role: 'A',
+    email: 'christiawan.apriliyanto@example.com',
     image:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+      'https://images.unsplash.com/photo-1560241804-02b7b1bc9d55?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8bWFufGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  },
+  { id:'97f2b1ee-3826-4524-a069-a774341c7f13',
+    name: 'Alfa Pungki Irawan',
+    title: 'System Architect Manager',
+    department: 'IT Architect',
+    role: 'A',
+    email: 'alfa.irawan@example.com',
+    image:
+      'https://images.unsplash.com/photo-1507438222021-237ff73669b5?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjB8fGJveXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  },
+  { id:'ef20b245-6286-42cd-9974-2a1740ea1447',
+    name: 'Michele Yeohan',
+    title: 'UI/UX',
+    department: 'IT Architect',
+    role: 'A',
+    email: 'michele.yeohan@example.com',
+    image:
+      'https://images.unsplash.com/photo-1599842057874-37393e9342df?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGdpcmx8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
   },
   { id:'a508be5f-6988-4741-8ae0-f5c48c9c7c83',
     name: 'Eko Sutrisno',
-    title: 'Tukang Makan Nasi Goreng',
-    department: 'Test Makanan',
-    role: 'Tester',
+    title: 'Full Stack Developer',
+    department: 'IT Architect',
+    role: 'T',
     email: 'eko.sutrisno@example.com',
     image:
       'https://images.unsplash.com/photo-1581704906775-891dd5207444?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGJveXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  },
+  { id:'2d0b5a8c-c6bd-402f-b68f-b7bcc1842721',
+    name: 'Meiliana Indriani',
+    title: 'QA and Technical Writer',
+    department: 'IT Architect',
+    role: 'T',
+    email: 'meiliana.indriani@example.com',
+    image:
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  },
+  { id:'4c162037-1815-4861-a415-5ab323700cf0',
+    name: 'Martin Orlando',
+    title: 'Software Engineer',
+    department: 'IT Architect',
+    role: 'T',
+    email: 'martin.orlando@example.com',
+    image:
+      'https://images.unsplash.com/photo-1592424388874-04d8b432a25e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mjl8fGJveXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
   },
 ]
 
