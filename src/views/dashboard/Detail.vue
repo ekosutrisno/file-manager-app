@@ -41,7 +41,6 @@
           </button>
         </div>
       </div>
-      
       <div class="py-4 px-4 md:px-10 flex items-center justify-between">
         <p class="hidden md:inline-flex items-center text-sm">
           <span class="cursor-pointer text-indigo-400 hover:text-indigo-800" @click="onLoadBucketObjectList">
@@ -236,10 +235,14 @@
 
           <!-- Drag and Drop Section -->
           <div class="p-2">
-             <div v-if="dataObjectList.length == 0 && isProcess" class="flex flex-col mb-5 items-center justify-center">
-              <Loader/>
-              <p>Fetching Object</p>
-            </div>
+              <div v-if="!allObjects.length" class="w-full flex flex-col items-center">
+                <p class="-mb-10 font-semibold text-gray-500 z-10">Oops... your drive is empty.</p>
+                <Character class="w-56 mx-auto"/>
+              </div>
+              <div v-if="dataObjectList.length == 0 && isProcess" class="flex text-sm flex-col -mt-14 mb-5 items-center justify-center">
+                <Loader/>
+                <p class="-mt-5">Fetching Object</p>
+              </div>
             <div @dragover="dragover" @dragleave="dragleave" @drop="drop" class="mt-1 max-w-lg mx-auto hidden sm:flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-400 transition-colors">
               <div class="space-y-1 text-center">
                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -313,6 +316,7 @@ import Loader from '../../components/Loader.vue';
 import VueEasyLightbox from "vue-easy-lightbox";
 import ModalDeleteObjectConfirm from '../../components/ModalDeleteObjectConfirm.vue';
 import ObjectFileCardFlex from '../../components/ObjectFileCardFlex.vue';
+import Character from '../../components/svg/Character.vue';
 
 /**
  * @author Eko Sutrisno
@@ -325,6 +329,7 @@ export default {
     ObjectFileCard,
     Loader,
     ObjectFileCardFlex,
+    Character,
   },
    setup () {
 

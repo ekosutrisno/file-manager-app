@@ -43,6 +43,19 @@ export default defineConfig({
             type: "image/png",
           },
         ],
+        shortcuts: [
+          {
+            name: "My Drive",
+            url: "/u/dashboard",
+            icons: [
+              {
+                src: "img/icons/android-chrome-192x192.png",
+                sizes: "192x192",
+                type: "image/png",
+              },
+            ],
+          },
+        ],
       },
     }),
   ],
