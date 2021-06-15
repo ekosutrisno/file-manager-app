@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen bg-gray-800 bg-custom font-quicksand">
+  <div class="min-h-screen bg-gray-800 bg-custom font-quicksand">
     <nav class="bg-gray-900 bg-opacity-20">
       <div class="flex justify-between max-w-7xl mx-auto px-6 md:px-4 py-4">
         <div class="font-semibold text-3xl">
@@ -78,7 +78,7 @@
         <Gen class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
       </div>
 
-      <p class="text-center text-gray-200 my-5 lg:mt-20">&copy;Erajaya Swasembada {{new Date().getFullYear()}}</p>
+      <p class="text-center text-gray-200 my-5 lg:mt-8">&copy;Erajaya Swasembada {{new Date().getFullYear()}}</p>
     </div>
   </div>
 </template>

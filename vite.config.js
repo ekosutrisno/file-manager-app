@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
@@ -10,6 +10,7 @@ export default defineConfig({
         name: "LiBox",
         short_name: "LiBox",
         theme_color: "#111827",
+        description: "Organize and Store your personal files easily",
         background_color: "#111827",
         icons: [
           {
@@ -45,7 +46,18 @@ export default defineConfig({
         ],
         shortcuts: [
           {
-            name: "My Drive",
+            name: "Profile",
+            url: "/u/dashboard/profile",
+            icons: [
+              {
+                src: "img/icons/android-chrome-192x192.png",
+                sizes: "192x192",
+                type: "image/png",
+              },
+            ],
+          },
+          {
+            name: "Drive",
             url: "/u/dashboard",
             icons: [
               {
