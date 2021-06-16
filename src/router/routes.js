@@ -17,13 +17,19 @@ const routes = [
     children: [
       {
         path: "/",
-        name:"HomePage",
+        name: "HomePage",
         component: HomePage,
+        meta: {
+          title: "HomePage",
+        },
       },
       {
         path: "/u/login",
         name: "LoginPage",
         component: LoginPage,
+        meta: {
+          title: "LoginPage",
+        },
       },
     ],
   },
@@ -35,26 +41,41 @@ const routes = [
         path: "/u/dashboard",
         name: "Dashboard",
         component: Home,
+        meta: {
+          title: "Dashboard",
+        },
       },
       {
         path: "/u/dashboard/bucket/:bucketName",
         name: "Detail",
         component: Detail,
+        meta: {
+          title: "Drive",
+        },
       },
       {
         path: "/u/dashboard/teams",
         name: "Team",
         component: Team,
+        meta: {
+          title: "Team",
+        },
       },
       {
         path: "/u/dashboard/projects",
         name: "Project",
         component: Project,
+        meta: {
+          title: "Project",
+        },
       },
       {
         path: "/u/dashboard/profile",
         name: "Profile",
         component: Profile,
+        meta: {
+          title: "Profile",
+        },
       },
     ],
   },

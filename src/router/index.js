@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import routes from "./routes";
 
-export default createRouter({
+const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
@@ -12,3 +12,10 @@ export default createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach((to, from, next) =>{
+  document.title = `LiBox - ${to.meta.title}`;
+  next();
+})
+
+export default router;
