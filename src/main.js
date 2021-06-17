@@ -17,7 +17,7 @@ import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 const toastOptions = {
   hideProgressBar: true,
-  timeout: 5000,
+  timeout: 3500,
   closeButton: false,
   toastClassName: 'toast-style'
 };

@@ -1,5 +1,7 @@
 import { useToast } from "vue-toastification";
 import axios from "axios";
+import JSZip from "jszip";
+import FileSaver from "file-saver";
 import { baseURL } from "../../assets/env";
 
 /**
@@ -23,6 +25,7 @@ const object_module = {
       path: "",
       urlPreview: "",
       processStatus: 0,
+      status: 0,
       isOnSelect: false,
       isProcess: false,
       isUploading: false,
@@ -58,6 +61,9 @@ const object_module = {
     },
     SET_DIRECTORIES: (state, payload) => {
       state.directories = payload;
+    },
+    SET_STATUS: (state, payload) => {
+      state.status += payload;
     },
     SET_PROCCESS_STATUS: (state, payload) => {
       state.processStatus = payload;
@@ -293,7 +299,7 @@ const object_module = {
                 dispatch("setObjectToDelete", {});
               }
 
-              toast.info(`${tempDataToDelete.length} Files has been deleted.`)
+              toast.info(`${tempDataToDelete.length} Files has been deleted.`);
             })
             .catch((err) => console.log(err));
       }
@@ -340,6 +346,52 @@ const object_module = {
         })
         .catch((err) => console.log(err));
     },
+    /**
+     * Download Multiple File and Pack in to .zip File
+     * @param  {} {state
+     * @param  {} commit
+     * @param  {} dispatch}
+     * @param  {} dataPayload
+     */
+    downLoadAndZip({ state, commit, dispatch }, dataPayload) {
+      // Data Selected
+      const dataToDownload = state.objects.filter((obj) => obj.deleteMarker);
+      const zip = new JSZip();
+      const promises = [];
+
+      // Set IsDelete Process
+      dispatch("setIsDownloading", true);
+
+      dataToDownload.forEach((data) => {
+        axios
+          .get(
+            `${baseURL}/url?bucket=${dataPayload.bucketName}&object=${data.objectName}`
+          )
+          .then((res) => {
+            const promise = getFile(commit, res.data.url).then((file) => {
+              const file_name = data.objectName;
+              zip.file(file_name, file, { binary: true });
+
+              if (state.status == dataToDownload.length) {
+                dispatch("setIsDownloading", false);
+
+                setTimeout(() => {
+                  Promise.all(promises).then(() => {
+                    zip.generateAsync({ type: "blob" }).then((content) => {
+                      FileSaver.saveAs(
+                        content,
+                        `${dataPayload.bucketName.toUpperCase()}.zip`
+                      ); // Save the file with file-saver Custom file name after 3 second
+                    });
+                  });
+                }, 1500);
+              }
+            });
+
+            promises.push(promise);
+          });
+      });
+    },
 
     clearSelectedObject({ commit }, data) {
       commit("CLEAR_SELECTED_OBJECT", data);
@@ -385,6 +437,28 @@ const object_module = {
       commit("SET_OBJECT_TO_DELETE", payload);
     },
   },
+};
+
+/**
+ * Generate Promise Method
+ * @param  {} url
+ * {@link downLoadAndZip}
+ */
+const getFile = (commit, url) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "GET",
+      url,
+      responseType: "arraybuffer",
+    })
+      .then((data) => {
+        resolve(data.data);
+        commit("SET_STATUS", 1);
+      })
+      .catch((error) => {
+        reject(error.toString());
+      });
+  });
 };
 
 export default object_module;

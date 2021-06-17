@@ -95,19 +95,23 @@
           leave-to-class="opacity-0 scale-95"
       >
       
-        <div v-if="countSelected" class="py-2 px-4 flex items-center justify-between bg-white shadow-2xl border h-16 z-20 right-5 md:right-10 absolute w-2/3 md:w-2/5 rounded-md">
+        <div v-if="countSelected" class="py-2 px-4 flex items-center justify-between bg-white shadow-2xl border h-16 z-20 right-5 md:right-10 absolute w-11/12 md:w-2/5 rounded-md">
           <div>
             <span class="text-sm">Items </span>
             <span class="font-semibold">{{countSelected}}</span>
           </div>
-          <div class="inline-flex items-center space-x-2">
-            <button @click="deleteMultiple" class="ml-2 inline-flex items-center space-x-2 cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-              <span>Delete</span>
+          <div class="inline-flex items-center space-x-2 text-xs">
+            <button v-tooltip:bottom.tooltip="'Delete All'" @click="deleteMultiple" class="ml-2 inline-flex items-center cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
-            <button @click="clearSelectedItems" class="ml-2 inline-flex items-center space-x-2 cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+            <button v-tooltip:left.tooltip="'Download All'" @click="downloadMultiple" class="ml-2 inline-flex items-center cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </button>
+            <button v-tooltip:left.tooltip="'Clear All'" @click="clearSelectedItems" class="ml-2 inline-flex items-center cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -469,6 +473,10 @@ export default {
        state.prefixPath= "";
      }
 
+     const downloadMultiple = ()=>{
+       store.dispatch('object_module/downLoadAndZip', {bucketName: route.params.bucketName});
+     }
+
      const show = () => {
         state.visible = true;
       };
@@ -565,7 +573,8 @@ export default {
       onChangeDisplay,
       deleteMultiple,
       onShowChekMarker,
-      clearSelectedItems
+      clearSelectedItems,
+      downloadMultiple
     }
    }
 }
