@@ -171,9 +171,6 @@ const object_module = {
         })
         .then(() => {
           dispatch("setObjectData", dataPayload.bucketName);
-          toast.info(
-            `File has been uploaded to bucket ${dataPayload.bucketName}.`
-          );
           dispatch("setIsUploading", false);
         })
         .catch((err) => console.log(err));
@@ -295,6 +292,8 @@ const object_module = {
                 dispatch("setIsDeleteProcess", false);
                 dispatch("setObjectToDelete", {});
               }
+
+              toast.info(`${tempDataToDelete.length} Files has been deleted.`)
             })
             .catch((err) => console.log(err));
       }

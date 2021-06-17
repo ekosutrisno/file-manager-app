@@ -33,12 +33,11 @@
       <Loader/>
       <p>Fetching Bucket</p>
     </div>
-    <!-- <div v-else class="flex-1"> -->
     <div v-else class="max-w-7xl flex flex-col items-center mx-auto px-4">
       <EmptyBox class="h-56 w-56" />
       <h2 class="text-center font-extrabold tracking-tight text-gray-900">
           <span class="block">You don't have a bucket yet,</span>
-          <span class="block text-indigo-600">let's start.</span>
+          <span class="block text-indigo-600">let's create.</span>
         </h2>
       <div class="mt-6 flex lg:flex-shrink-0">
         <div class="inline-flex rounded-md shadow">
@@ -100,6 +99,7 @@ export default {
         getListOfBucket()
       }
      );
+
 
     return{
       ...toRefs(state),

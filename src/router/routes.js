@@ -1,5 +1,6 @@
 import HomePage from "../views/HomePage.vue";
 import LoginPage from "../views/LoginPage.vue";
+import Documentation from "../views/Documentation.vue";
 import Home from "../views/dashboard/Home.vue";
 import Detail from "../views/dashboard/Detail.vue";
 import Team from "../views/dashboard/Team.vue";
@@ -21,6 +22,14 @@ const routes = [
         component: HomePage,
         meta: {
           title: "HomePage",
+        },
+      },
+      {
+        path: "/documentation",
+        name: "Documentation",
+        component: Documentation,
+        meta: {
+          title: "Documentation",
         },
       },
       {

@@ -25,6 +25,11 @@
   }
 }
 
+.toast-style {
+  background-color: rgba(31, 41, 55, 1) !important;
+  @apply border border-gray-700 shadow-xl;
+}
+
 [tooltip] {
   position: relative;
 }
@@ -57,7 +62,7 @@
   text-overflow: ellipsis;
   padding: 0.5rem;
   border-radius: 0.3rem;
-  border: 2px solid rgba(31, 41, 55,1);
+  border: 2px solid rgba(31, 41, 55, 1);
   box-shadow: 0 1em 2em -0.5em rgba(0, 0, 0, 0.35);
   background: rgb(31, 41, 55);
   color: #fff;
@@ -151,4 +156,3 @@
     transform: translate(0, -50%);
   }
 }
-

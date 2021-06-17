@@ -143,8 +143,8 @@
               <span>Files</span> 
               <div  class="flex items-start">
                   <div class="flex items-center h-5 space-x-2">
-                    <p>Show Check</p>
-                    <input  @change="onShowChekMarker" id="on-show" :checked="isOnSelect" name="on-show" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                    <p>Select</p>
+                    <input  @change="onShowChekMarker" id="on-show" :checked="isOnSelect" name="on-show" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
                   </div>
               </div>
             </div>
@@ -200,8 +200,8 @@
               <span>Files</span> 
               <div  class="flex items-start">
                   <div class="flex items-center h-5 space-x-2">
-                    <p>Show Check</p>
-                    <input  @change="onShowChekMarker" id="on-show-list" :checked="isOnSelect" name="on-show-list" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" />
+                    <p>Select</p>
+                    <input  @change="onShowChekMarker" id="on-show-list" :checked="isOnSelect" name="on-show-list" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
                   </div>
               </div>
             </div>
@@ -317,6 +317,7 @@ import VueEasyLightbox from "vue-easy-lightbox";
 import ModalDeleteObjectConfirm from '../../components/ModalDeleteObjectConfirm.vue';
 import ObjectFileCardFlex from '../../components/ObjectFileCardFlex.vue';
 import Character from '../../components/svg/Character.vue';
+import { useToast } from 'vue-toastification';
 
 /**
  * @author Eko Sutrisno
@@ -335,6 +336,7 @@ export default {
 
      const route = useRoute();
      const store = useStore();
+     const toast = useToast();
 
      const openModal = ref(false);
      
@@ -437,6 +439,7 @@ export default {
      */
      const onUploadMultipleFile = (files) => {
        if(files.length > 0){
+            var fileTotal = 0;
             files.forEach( async (file ) => {
                 let formData = new FormData();
                 formData.append('file', file);
@@ -452,9 +455,15 @@ export default {
                   bucketName: bucketName,
                   url: URL
                 }
+
+                fileTotal++;
                 
                 await store.dispatch("object_module/onUploadObject", dataPayload);
-            })
+            });
+
+          toast.info(
+            `${fileTotal} Files has been uploaded.`
+          );
        }
        // Clean prefix path
        state.prefixPath= "";
