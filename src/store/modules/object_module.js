@@ -27,6 +27,7 @@ const object_module = {
       processStatus: 0,
       status: 0,
       isOnSelect: false,
+      isOnSelectAll: false,
       isProcess: false,
       isUploading: false,
       isDownloading: false,
@@ -42,12 +43,15 @@ const object_module = {
     SET_ALL_OBJECT: (state, payload) => {
       state.allObjects = payload;
     },
-    CLEAR_SELECTED_OBJECT: (state, data) => {
+    CLEAR_SELECTED_OBJECT: (state) => {
       var objects = state.objects.filter((obj) => obj.deleteMarker);
       objects.forEach((obj) => (obj.deleteMarker = false));
     },
     SET_IS_ON_SELECT: (state, data) => {
       state.isOnSelect = data;
+    },
+    SET_IS_ON_SELECT_ALL: (state, data) => {
+      state.isOnSelectAll = data;
     },
     SET_SELECTED_OBJECT: (state, payload) => {
       var data = state.objects.filter(
@@ -58,6 +62,9 @@ const object_module = {
         if (objectData.deleteMarker) objectData.deleteMarker = false;
         else objectData.deleteMarker = true;
       }
+    },
+    SET_SELECTED_ALL_OBJECT: (state) => {
+      state.objects.forEach((data) => (data.deleteMarker = true));
     },
     SET_DIRECTORIES: (state, payload) => {
       state.directories = payload;
@@ -265,7 +272,7 @@ const object_module = {
      * @param  {} {dispatch}
      * @param  {} dataPayload
      */
-    async onDeleteMultipleObject({ state, dispatch }, dataPayload) {
+    async onDeleteMultipleObject({ state, dispatch, commit }, dataPayload) {
       var tempDataToDelete = state.objects.filter((obj) => obj.deleteMarker);
 
       if (tempDataToDelete.length != 0) {
@@ -284,6 +291,8 @@ const object_module = {
               `${baseURL}/object/multiple?bucket=${dataPayload.bucketName}&object=${stringObjectName}`
             )
             .then(() => {
+              commit("SET_IS_ON_SELECT_ALL", false);
+
               if (!dataPayload.isRecursiveFolder) {
                 dispatch("setObjectData", dataPayload.bucketName);
                 dispatch("setIsDeleteProcess", false);
@@ -374,6 +383,7 @@ const object_module = {
 
               if (state.status == dataToDownload.length) {
                 dispatch("setIsDownloading", false);
+                commit("SET_IS_ON_SELECT_ALL", false);
 
                 setTimeout(() => {
                   Promise.all(promises).then(() => {
@@ -393,16 +403,31 @@ const object_module = {
       });
     },
 
-    clearSelectedObject({ commit }, data) {
-      commit("CLEAR_SELECTED_OBJECT", data);
+    clearSelectedObject({ commit }) {
+      commit("CLEAR_SELECTED_OBJECT");
+      commit("SET_IS_ON_SELECT_ALL", false);
     },
 
     setSelectedObject({ commit }, objectPayload) {
       commit("SET_SELECTED_OBJECT", objectPayload);
     },
 
+    setSelectedAllObject({ state, commit }) {
+      if(state.isOnSelectAll){
+        commit("SET_IS_ON_SELECT_ALL", false);
+        commit("CLEAR_SELECTED_OBJECT");
+      }else{
+        commit("SET_IS_ON_SELECT_ALL", true);
+        commit("SET_SELECTED_ALL_OBJECT");
+      }
+    },
+
     setIsOnSelect({ commit }, status) {
       commit("SET_IS_ON_SELECT", status);
+    },
+    
+    setIsOnSelectAll({ commit }, status) {
+      commit("SET_IS_ON_SELECT_ALL", status);
     },
 
     setPath({ commit }, path) {

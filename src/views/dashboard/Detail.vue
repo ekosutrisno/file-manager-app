@@ -106,12 +106,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
-            <button v-tooltip:left.tooltip="'Download All'" @click="downloadMultiple" class="ml-2 inline-flex items-center cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+            <button v-tooltip:left.tooltip="'Download All as ZIP'" @click="downloadMultiple" class="ml-2 inline-flex items-center cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
             </button>
-            <button v-tooltip:left.tooltip="'Clear All'" @click="clearSelectedItems" class="ml-2 inline-flex items-center cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+            <button v-tooltip:left.tooltip="'Unselect All'" @click="clearSelectedItems" class="ml-2 inline-flex items-center cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -121,7 +121,8 @@
       </transition>
      </div>
 
-      <div class="py-2 px-2 md:px-6 flex-1 overflow-y-auto on-scrollbar">
+      <div class="relative py-2 px-2 md:px-6 flex-1 overflow-y-auto on-scrollbar">
+          
           <div v-if="display === 'block'" class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
             <button v-if="isRecursiveFolder" @click="onLoadBucketObjectList" class="flex items-center space-x-1 justify-center px-4 py-2 my-2 border border-transparent rounded-md shadow-sm text-sm font-medium hover:text-white text-indigo-600 transition-colors hover:bg-indigo-500 focus:outline-none">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,10 +146,14 @@
             <!-- Show File -->
             <div class="flex mt-5 mb-3 items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
               <span>Files</span> 
-              <div  class="flex items-start">
+              <div  class="flex items-start space-x-2">
                   <div class="flex items-center h-5 space-x-2">
                     <p>Select</p>
                     <input  @change="onShowChekMarker" id="on-show" :checked="isOnSelect" name="on-show" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
+                  </div>
+                  <div class="flex items-center h-5 space-x-2">
+                    <p>All</p>
+                    <input  @change="setSelectedAllObject" id="on-show-all" :checked="isOnSelectAll" name="on-show-all" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
                   </div>
               </div>
             </div>
@@ -202,10 +207,14 @@
             <!-- Show File Display List -->
             <div class="flex mt-5 mb-3 items-center justify-between px-4 text-sm" v-if="objects.length && !onSearhing">
               <span>Files</span> 
-              <div  class="flex items-start">
+              <div  class="flex items-start space-x-2">
                   <div class="flex items-center h-5 space-x-2">
                     <p>Select</p>
-                    <input  @change="onShowChekMarker" id="on-show-list" :checked="isOnSelect" name="on-show-list" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
+                    <input  @change="onShowChekMarker" id="on-show" :checked="isOnSelect" name="on-show" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
+                  </div>
+                  <div class="flex items-center h-5 space-x-2">
+                    <p>All</p>
+                    <input  @change="setSelectedAllObject" id="on-show-all" :checked="isOnSelectAll" name="on-show-all" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
                   </div>
               </div>
             </div>
@@ -360,6 +369,7 @@ export default {
        directories: computed(()=> store.state.object_module.directories),
        isRecursiveFolder: computed(()=> store.state.object_module.isRecursiveFolder),
        isOnSelect: computed(()=> store.state.object_module.isOnSelect),
+       isOnSelectAll: computed(()=> store.state.object_module.isOnSelectAll),
        isProcess: computed(()=> store.state.object_module.isProcess),
        isUploading: computed(()=> store.state.object_module.isUploading),
        isDownloading: computed(()=> store.state.object_module.isDownloading),
@@ -512,6 +522,7 @@ export default {
       event.preventDefault();
       // Add some visual fluff to show the user can drop its files
       if (!event.currentTarget.classList.contains('border-indigo-400')) {
+
         event.currentTarget.classList.remove('border-gray-300');
         event.currentTarget.classList.add('border-indigo-400');
         event.currentTarget.classList.add('bg-indigo-50');
@@ -549,6 +560,10 @@ export default {
       }
     }
 
+    const setSelectedAllObject = () =>{
+      store.dispatch("object_module/setSelectedAllObject");
+    }
+
     const clearSelectedItems = () =>{
       store.dispatch("object_module/clearSelectedObject", []);
     }
@@ -574,7 +589,8 @@ export default {
       deleteMultiple,
       onShowChekMarker,
       clearSelectedItems,
-      downloadMultiple
+      downloadMultiple,
+      setSelectedAllObject
     }
    }
 }

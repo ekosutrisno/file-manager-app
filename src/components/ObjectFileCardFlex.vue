@@ -8,7 +8,7 @@
 
    <div class="flex items-center justify-between">
       <div class="flex items-center w-full md:w-1/2">
-          <div v-if="!object.dir && isOnSelect" class="flex items-start">
+          <div v-if="!object.dir && (isOnSelect || isOnSelectAll)" class="flex items-start">
             <div class="flex items-center h-5">
                <input @change="onChangeSelect(object)" id="on-check-list" :checked="object.deleteMarker" name="on-check-list" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
             </div>
@@ -110,6 +110,7 @@ export default {
       const state = reactive({
          path: computed(()=> store.state.object_module.path),
          isOnSelect: computed(()=> store.state.object_module.isOnSelect),
+         isOnSelectAll: computed(()=> store.state.object_module.isOnSelectAll),
          isOpenOption: false
       });
 

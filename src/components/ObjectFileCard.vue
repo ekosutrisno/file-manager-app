@@ -13,7 +13,7 @@
    <Svg1 v-if="object.dir" class="absolute -top-1 right-0"/>
    <Svg2 v-else class="absolute -top-1 right-0"/>
    
-   <div v-if="!object.dir && isOnSelect" class="flex items-start absolute top-1.5 right-2">
+   <div v-if="!object.dir && (isOnSelect || isOnSelectAll)" class="flex items-start absolute top-1.5 right-2">
       <div class="flex items-center h-5">
          <input @change="onChangeSelect(object)" id="on-check-default" :checked="object.deleteMarker" name="on-check-default" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 md:cursor-pointer text-indigo-600 border-gray-300 rounded" />
       </div>
@@ -95,6 +95,7 @@ export default {
       const state = reactive({
          path: computed(()=> store.state.object_module.path),
          isOnSelect: computed(()=> store.state.object_module.isOnSelect),
+         isOnSelectAll: computed(()=> store.state.object_module.isOnSelectAll),
       });
 
       /**
