@@ -13,6 +13,14 @@ import LayoutWeb from "../layout/LayoutWeb.vue";
 
 const routes = [
   {
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: () => import("../views/NotFoundPage.vue"),
+    meta: {
+      title: "Not Found",
+    },
+  },
+  {
     path: "/",
     component: LayoutWeb,
     children: [

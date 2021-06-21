@@ -1,5 +1,5 @@
 <template>
-  <div class="font-quicksand">
+  <div class="font-quicksand relative">
     <div class="h-screen flex flex-col">
       <div class="flex-none flex-shrink-0">
         <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
@@ -103,12 +103,28 @@
           <router-view ></router-view>
       </main>
     </div>
+
+  <!-- Offline Action  -->
+  <div v-if="!online" class="fixed absolute inset-0 bg-gray-900 z-50 bg-opacity-90 flex items-center justify-center">
+      <div class="text-center text-indigo-50">
+        <Offline class="h-56 w-56"/>
+        <h1 class="z-50 my-2">Please check your internet.</h1>
+        <div class="flex flex-col text-indigo-50 items-center -mt-5 text-xs">
+          <Loader/>
+          <span class="-mt-6">Wait to connect</span>
+        </div>
+      </div>
+  </div>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import Offline from '../components/svg/Offline.vue'
+import { useOnline } from '@vueuse/core'
+import Loader from '../components/Loader.vue'
+
 
 const navigation = [{nav:'Dashboard', to:'/u/dashboard'}, {nav:'Team', to:'/u/dashboard/teams'}, {nav: 'Projects', to:'/u/dashboard/projects'}]
 const profile = [{nav:'Your Profile', to:'/u/dashboard/profile'}, {nav:'Settings', to:'#'}, {nav:'Sign out', to:'#'}]
@@ -121,17 +137,26 @@ export default {
     Menu,
     MenuButton,
     MenuItem,
-    MenuItems
+    MenuItems,
+    Offline,
+    Loader
   },
   setup() {
     const open = ref(false);
     const openModal = ref(false);
+    const online = useOnline()
+
+    const onReload = ()=>{
+      window.location.reload();
+    }
 
     return {
       navigation,
       profile,
       open,
-      openModal
+      openModal,
+      online,
+      onReload
     }
   },
 }
