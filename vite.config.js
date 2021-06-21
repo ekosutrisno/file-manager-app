@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
+      registerType: "autoUpdate",
       manifest: {
         name: "LiBox",
         short_name: "LiBox",
@@ -17,7 +18,7 @@ export default defineConfig({
             src: "pwa/maskable_icon.png",
             sizes: "731x731",
             type: "image/png",
-            purpose: "maskable",
+            purpose: "any maskable",
           },
           {
             src: "pwa/android-icon-192x192.png",
@@ -80,7 +81,7 @@ export default defineConfig({
             ],
           },
         ],
-      },
+      }
     }),
   ],
 });

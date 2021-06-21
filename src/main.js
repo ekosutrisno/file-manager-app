@@ -34,7 +34,6 @@ const updateSW = registerSW({
   },
 });
 
-
 const app = createApp(App);
 
 // Use Directive and Register Global
