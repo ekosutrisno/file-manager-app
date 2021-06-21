@@ -99,6 +99,7 @@
           <div>
             <span class="text-sm">Items </span>
             <span class="font-semibold">{{countSelected}}</span>
+            <span class="text-sm hidden md:inline"> Selected</span>
           </div>
           <div class="inline-flex items-center space-x-2 text-xs">
             <button v-tooltip:bottom.tooltip="'Delete All'" @click="deleteMultiple" class="ml-2 inline-flex items-center cursor-pointer py-2 px-3 transition bg-indigo-50 rounded-md font-medium text-indigo-600 hover:bg-indigo-700 hover:text-indigo-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
@@ -285,8 +286,8 @@
           </div>
       </div>
    </div>
-   <!-- Modal Delete Bucket -->
 
+   <!-- Modal Delete Bucket -->
   <teleport to="#modal-teleport">
     <ModalDeleteBucket 
         :open="openModal" 
