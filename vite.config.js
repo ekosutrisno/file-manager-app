@@ -15,43 +15,43 @@ export default defineConfig({
         background_color: "#111827",
         icons: [
           {
-            src: "pwa1/maskable_icon.png",
+            src: "pwa/maskable_icon.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
           },
           {
-            src: "pwa1/android-icon-192x192.png",
+            src: "pwa/android-icon-192x192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "pwa1/android-icon-512x512.png",
+            src: "pwa/android-icon-512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "pwa1/apple-icon-180x180.png",
+            src: "pwa/apple-icon-180x180.png",
             sizes: "180x180",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "pwa1/favicon-16x16.png",
+            src: "pwa/favicon-16x16.png",
             sizes: "16x16",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "pwa1/favicon-96x96.png",
+            src: "pwa/favicon-96x96.png",
             sizes: "96x96",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "pwa1/favicon-32x32.png",
+            src: "pwa/favicon-32x32.png",
             sizes: "32x32",
             type: "image/png",
             purpose: "any",
@@ -63,7 +63,7 @@ export default defineConfig({
             url: "/u/dashboard/profile",
             icons: [
               {
-                src: "pwa1/android-icon-192x192.png",
+                src: "pwa/android-icon-192x192.png",
                 sizes: "192x192",
                 type: "image/png",
               },
@@ -74,7 +74,7 @@ export default defineConfig({
             url: "/u/dashboard",
             icons: [
               {
-                src: "pwa1/android-icon-192x192.png",
+                src: "pwa/android-icon-192x192.png",
                 sizes: "192x192",
                 type: "image/png",
               },
