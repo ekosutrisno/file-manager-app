@@ -139,7 +139,7 @@
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
                 :bucket="$route.params.bucketName"
-                @on-show-preview="showSingle(object.objectName)"
+                @on-show-preview="showSingle"
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
@@ -165,7 +165,7 @@
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
                 :bucket="$route.params.bucketName"
-                @on-show-preview="showSingle(object.objectName)"
+                @on-show-preview="showSingle"
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
@@ -179,7 +179,7 @@
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
                 :bucket="$route.params.bucketName"
-                @on-show-preview="showSingle(object.objectName)"
+                @on-show-preview="showSingle"
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
@@ -200,7 +200,7 @@
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
                 :bucket="$route.params.bucketName"
-                @on-show-preview="showSingle(object.objectName)"
+                @on-show-preview="showSingle"
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
@@ -226,7 +226,7 @@
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
                 :bucket="$route.params.bucketName"
-                @on-show-preview="showSingle(object.objectName)"
+                @on-show-preview="showSingle"
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
@@ -240,7 +240,7 @@
                 :object="object"
                 :isRecursiveFolder="isRecursiveFolder"
                 :bucket="$route.params.bucketName"
-                @on-show-preview="showSingle(object.objectName)"
+                @on-show-preview="showSingle"
                 @on-load-bucket-object-path="onLoadBucketObjectListPath"
               />
             </div>
@@ -311,7 +311,7 @@
         scrollDisabled
         escDisabled
         :visible="visible"
-        :imgs="imgs"
+        :imgs="urlPreview"
         :index="index"
         @hide="handleHide"
       />
@@ -321,8 +321,8 @@
 
 <script>
 import { computed, onMounted, reactive, ref, toRefs } from 'vue';
-import { useRoute } from 'vue-router'
-import {baseURL} from '../../assets/env';
+import { useRoute } from 'vue-router';
+import { baseURL } from '../../services/axiosInstance';
 import { useStore } from 'vuex';
 import ModalDeleteBucket from '../../components/ModalDeleteBucket.vue';
 import ObjectFileCard from '../../components/ObjectFileCard.vue';
@@ -355,7 +355,7 @@ export default {
      const openModal = ref(false);
      
      const state = reactive({
-       imgs: "",
+       urlPreview: "",
        visible: false,
        index: 0, 
        prefixPath: '',
@@ -495,15 +495,23 @@ export default {
         state.visible = false;
       };
 
-    const showSingle = (objectName) => {
+    /**
+     * Show and Set Preview URL for Images File
+    */
+    const showSingle = (object) => {
       var data = {
         bucketName: route.params.bucketName,
-        objectName: objectName
+        objectName: object.objectName
       }
+
       store.dispatch("object_module/setUrlPreview", data)
         .then(() =>{ 
-          show();
-          state.imgs = computed(()=> store.state.object_module.urlPreview);
+          state.urlPreview = computed(()=> store.state.object_module.urlPreview);
+          
+          if(object.isPdf)
+            window.open(state.urlPreview);
+          else
+            show();
         })
     };
 

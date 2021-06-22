@@ -1,3 +1,7 @@
+/**
+ * @author Eko Sutrisno
+ */
+
 const display_moduel = {
   namespaced: true,
   state() {

@@ -1,8 +1,7 @@
 import { useToast } from "vue-toastification";
-import axios from "axios";
 import JSZip from "jszip";
 import FileSaver from "file-saver";
-import { baseURL } from "../../assets/env";
+import api from "../../services/axiosInstance";
 
 /**
  * @author Eko Sutrisno
@@ -115,16 +114,19 @@ const object_module = {
       dispatch("setIsRecursiveFolder", false);
       dispatch("setPath", "");
 
-      axios
-        .get(`${baseURL}/object/${bucketName}`)
+      api
+        .get(`/object/${bucketName}`)
         .then((res) => {
           commit("SET_ALL_OBJECT", res.data);
 
-          var dirList = []; // Filter Object type Directory
-          dirList = res.data.filter((file) => file.dir == true);
+          var dirList = [];
+          var fileList = [];
 
-          var fileList = []; // Filter Object type File
-          fileList = res.data.filter((file) => file.dir == false);
+          // Filter Object type Directory or File
+          res.data.forEach((file) => {
+            if (file.dir) dirList.push(file);
+            else fileList.push(file);
+          });
 
           commit("SET_DIRECTORIES", dirList);
           commit("SET_OBJECTS", fileList);
@@ -144,16 +146,19 @@ const object_module = {
       dispatch("setIsProcess", true);
       dispatch("setIsRecursiveFolder", true);
 
-      axios
-        .get(`${baseURL}/object/${data.bucketName}/path?path=${data.path}`)
+      api
+        .get(`/object/${data.bucketName}/path?path=${data.path}`)
         .then((res) => {
           commit("SET_ALL_OBJECT", res.data);
 
-          var dirList = []; // Filter Object type Directory
-          dirList = res.data.filter((file) => file.dir == true);
+          var dirList = [];
+          var fileList = [];
 
-          var fileList = []; // Filter Object type File
-          fileList = res.data.filter((file) => file.dir == false);
+          // Filter Object type Directory or File
+          res.data.forEach((file) => {
+            if (file.dir) dirList.push(file);
+            else fileList.push(file);
+          });
 
           commit("SET_DIRECTORIES", dirList);
           commit("SET_OBJECTS", fileList);
@@ -171,7 +176,7 @@ const object_module = {
     onUploadObject({ commit, dispatch }, dataPayload) {
       dispatch("setIsUploading", true);
 
-      axios
+      api
         .post(dataPayload.url, dataPayload.formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -196,9 +201,9 @@ const object_module = {
      */
     async onDownloadObject({ dispatch }, dataPayload) {
       dispatch("setIsDownloading", true);
-      await axios
+      await api
         .get(
-          `${baseURL}/url?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
+          `/url?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
         )
         .then((res) => {
           try {
@@ -218,7 +223,7 @@ const object_module = {
      * @param  {} dataPayload
      */
     downloadAction({ dispatch }, object) {
-      axios({
+      api({
         url: object.url,
         method: "GET",
         responseType: "blob",
@@ -244,9 +249,9 @@ const object_module = {
       dispatch("setIsDeleteConfirm", false);
       dispatch("setIsDeleteProcess", true);
 
-      await axios
+      await api
         .delete(
-          `${baseURL}/object/single?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
+          `/object/single?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
         )
         .then(() => {
           if (!dataPayload.isRecursiveFolder) {
@@ -286,9 +291,9 @@ const object_module = {
         dispatch("setIsDeleteProcess", true);
 
         if (stringObjectName.trim().length > 0)
-          await axios
+          await api
             .delete(
-              `${baseURL}/object/multiple?bucket=${dataPayload.bucketName}&object=${stringObjectName}`
+              `/object/multiple?bucket=${dataPayload.bucketName}&object=${stringObjectName}`
             )
             .then(() => {
               commit("SET_IS_ON_SELECT_ALL", false);
@@ -323,9 +328,9 @@ const object_module = {
       dispatch("setIsDeleteConfirm", false);
       dispatch("setIsDeleteProcess", true);
 
-      await axios
+      await api
         .delete(
-          `${baseURL}/object/path?bucket=${dataPayload.bucketName}&path=${dataPayload.prefixPath}`
+          `/object/path?bucket=${dataPayload.bucketName}&path=${dataPayload.prefixPath}`
         )
         .then(() => {
           dispatch("setObjectData", dataPayload.bucketName);
@@ -340,9 +345,9 @@ const object_module = {
      * @param  {} dataPayload
      */
     async setUrlPreview({ commit }, dataPayload) {
-      await axios
+      await api
         .get(
-          `${baseURL}/url?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
+          `/url?bucket=${dataPayload.bucketName}&object=${dataPayload.objectName}`
         )
         .then((res) => {
           try {
@@ -372,9 +377,9 @@ const object_module = {
       dispatch("setIsDownloading", true);
 
       dataToDownload.forEach((data) => {
-        axios
+        api
           .get(
-            `${baseURL}/url?bucket=${dataPayload.bucketName}&object=${data.objectName}`
+            `/url?bucket=${dataPayload.bucketName}&object=${data.objectName}`
           )
           .then((res) => {
             const promise = getFile(commit, res.data.url).then((file) => {
@@ -413,10 +418,10 @@ const object_module = {
     },
 
     setSelectedAllObject({ state, commit }) {
-      if(state.isOnSelectAll){
+      if (state.isOnSelectAll) {
         commit("SET_IS_ON_SELECT_ALL", false);
         commit("CLEAR_SELECTED_OBJECT");
-      }else{
+      } else {
         commit("SET_IS_ON_SELECT_ALL", true);
         commit("SET_SELECTED_ALL_OBJECT");
       }
@@ -425,7 +430,7 @@ const object_module = {
     setIsOnSelect({ commit }, status) {
       commit("SET_IS_ON_SELECT", status);
     },
-    
+
     setIsOnSelectAll({ commit }, status) {
       commit("SET_IS_ON_SELECT_ALL", status);
     },
@@ -471,7 +476,7 @@ const object_module = {
  */
 const getFile = (commit, url) => {
   return new Promise((resolve, reject) => {
-    axios({
+    api({
       method: "GET",
       url,
       responseType: "arraybuffer",

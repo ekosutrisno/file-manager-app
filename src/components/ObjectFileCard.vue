@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import moment from 'moment';
 import Svg1 from './svg/Svg1.vue';
 import Svg2 from './svg/Svg2.vue';
 import { useStore } from 'vuex';
@@ -63,6 +62,7 @@ import { computed, reactive, toRefs } from '@vue/runtime-core';
 import ModalDeleteObjectConfirm from './ModalDeleteObjectConfirm.vue';
 import FileExtentionType from './FileExtentionType.vue';
 import FolderBlue from './svg/FolderBlue.vue';
+import {checkFileExt, formatBytes, isAllowPreview, formatDateModified} from '../services/utils.js';
 
 /**
  * @author Eko Sutrisno
@@ -106,10 +106,13 @@ export default {
       }
 
       /**
-       * Emit for Handling onloadbucket with folder
+       * Emit for Handling Set Preview Data
        */
       const onShowPreview = () => {
-         ctx.emit('on-show-preview');
+         ctx.emit('on-show-preview',{
+            isPdf: checkFileExt(props.object.objectName) === '.pdf', 
+            objectName: props.object.objectName
+         });
       }
 
      /**
@@ -164,13 +167,6 @@ export default {
      }
 
       /**
-      * Format date action using momen with format 'Apr 28, 2021 4:00 PM'
-      */
-      const formatDateModified = ( date )=>{
-         return  moment(date).format('lll');
-      }
-
-      /**
        * On Selected Action
        */
       const onChangeSelect = ( object ) => {
@@ -182,35 +178,6 @@ export default {
       */
       const formatObjectName = (objectName)=>{
          return state.path.length > 0 ? objectName.replace(state.path, "") : objectName;
-      }
-
-      /**
-      * Format Size file function
-      */
-      const formatBytes = (bytes, decimals = 2)=> {
-         if (bytes === 0) return '0 Bytes';
-
-         const k = 1024;
-         const dm = decimals < 0 ? 0 : decimals;
-         const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-         const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-      }
-
-      const checkFileExt = (fileName) =>{
-         var fileExtensionPattern = /\.([0-9a-z]+)(?=[?#])|(\.)(?:[\w]+)$/gmi;
-         return fileName.includes('.') ? fileName.match(fileExtensionPattern)[0] : '.exe';
-      }
-
-      const isAllowPreview = (objectName)=>{
-         return checkFileExt(objectName) === '.jpg' 
-                  ||checkFileExt(objectName) === '.jpeg' 
-                  ||checkFileExt(objectName) === '.webp' 
-                  ||checkFileExt(objectName) === '.png' 
-                  ||checkFileExt(objectName) === '.pdf' 
-                  ||checkFileExt(objectName) === '.svg'
       }
 
       return{

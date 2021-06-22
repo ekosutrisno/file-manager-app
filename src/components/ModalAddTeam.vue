@@ -51,7 +51,6 @@
 
 <script>
 import { reactive, toRefs } from 'vue';
-import axios from 'axios';
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 
 const baseURL = 'http://localhost:9099/file';

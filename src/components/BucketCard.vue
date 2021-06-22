@@ -13,7 +13,7 @@
             </span>
          </div>
          <p class="font-semibold text-gray-500 text-xs">
-           Create date: {{ formatDateCreated(bucket.creationDate) }}
+           Create date: {{ formatDateModified(bucket.creationDate) }}
          </p>
       </div>
       <Svg3 class="absolute top-0 right-0"/> 
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import { formatDateModified } from '../services/utils';
 import Svg3 from './svg/Svg3.vue';
 
 /**
@@ -42,12 +42,8 @@ export default {
       const formatBucketName = (bucketName) =>{
          return bucketName.toUpperCase();
       }
-
-      const formatDateCreated = (date)=>{
-         return moment(date).format('lll');
-      }
    
-      return {formatBucketName,formatDateCreated}
+      return {formatBucketName,formatDateModified}
    }
 }
 </script>

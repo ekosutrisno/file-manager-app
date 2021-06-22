@@ -1,6 +1,5 @@
-import axios from "axios";
 import { useToast } from "vue-toastification";
-import { baseURL } from "../../assets/env";
+import api from '../../services/axiosInstance';
 
 /**
  * @author Eko Sutrisno
@@ -36,8 +35,8 @@ const bucket_module = {
     setBucketData({ commit, dispatch }) {
       dispatch("setIsProcessStatus", true);
 
-      axios
-        .get(`${baseURL}/bucket`)
+      api
+        .get(`/bucket`)
         .then((res) => {
           commit(
             "SET_BUCKETS",
@@ -58,23 +57,22 @@ const bucket_module = {
      * @param  {} bucketName
      */
     createBucketData({ dispatch }, bucketName) {
-      axios
-        .post(`${baseURL}/bucket?bucketName=${bucketName}`)
+      api
+        .post(`/bucket?bucketName=${bucketName}`)
         .then(() => {
           dispatch("setBucketData");
           toast.info(`Bucket ${bucketName.toUpperCase()} has been created.`);
         })
         .catch((err) => console.log(err));
     },
-
     /**
      * Delete Bucket
      * @param  {} {dispatch}
      * @param  {} bucketName
      */
     deleteBucketData({ dispatch }, bucketName) {
-      axios
-        .delete(`${baseURL}/bucket/${bucketName}`)
+      api
+        .delete(`/bucket/${bucketName}`)
         .then(() => {
           dispatch("setBucketData");
           toast.info(`Bucket ${bucketName.toUpperCase()} has been deleted.`);

@@ -5,7 +5,7 @@
             {{ project.projectName }}
          </div>
          <p class="text-sm text-indigo-50"> {{project.description}} </p>
-         <p class="my-2 text-yellow-300">{{ formatDateCreated(project.dueDate) }} </p>
+         <p class="my-2 text-yellow-300">{{ formatDateModified(project.dueDate) }} </p>
       </div>
   
       <div>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import {formatDateModified} from '../services/utils';
 
 /**
  * @author Eko Sutrisno
@@ -36,12 +36,8 @@ export default {
    },
       
    setup(){
-      const formatDateCreated = (date)=>{
-            return moment(date).format('lll');
-      }
-
       return{
-         formatDateCreated
+         formatDateModified
       }
    }
 
