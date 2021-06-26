@@ -35,6 +35,7 @@ const isAllowPreview = (objectName) => {
     checkFileExt(objectName) === ".webp" ||
     checkFileExt(objectName) === ".png" ||
     checkFileExt(objectName) === ".pdf" ||
+    checkFileExt(objectName) === ".gif" ||
     checkFileExt(objectName) === ".svg"
   );
 };
