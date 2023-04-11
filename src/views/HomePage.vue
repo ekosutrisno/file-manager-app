@@ -8,7 +8,7 @@
         
         <p class="md:text-lg text-base mt-2 mb-10 p-2 text-gray-400">
           Organize and store your personal files easily using 
-            <span class="text-indigo-300 font-semibold">Li</span><span class="text-indigo-50 font-semibold">Box</span>
+            <span class="text-indigo-300 font-semibold">Magic</span><span class="text-indigo-50 font-semibold">Box</span>
         </p>
 
         <router-link to="/u/dashboard" class="py-2 px-8 rounded-md bg-indigo-400 text-white hover:bg-indigo-500">Dashboard</router-link>
@@ -30,7 +30,7 @@
           <Gen class="md:w-12 md:h-12 h-8 w-8 shadow-xl" />
         </div>
 
-      <p class="text-center text-xs text-gray-300 my-5 lg:mt-8">&copy;Erajaya Swasembada {{new Date().getFullYear()}}</p>
+      <p class="text-center text-xs text-gray-300 my-5 lg:mt-8">&copy; Eko Sutrisno {{new Date().getFullYear()}} under MIT License </p>
     </div>
   </div>
 </template>

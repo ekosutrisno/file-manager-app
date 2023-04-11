@@ -9,7 +9,7 @@
                 <div class="flex-shrink-0">
                   <router-link to="/">
                     <div class="font-semibold text-2xl">
-                      <span class="text-indigo-400">Li</span>
+                      <span class="text-indigo-400">Magic</span>
                       <span class="text-indigo-50">Box</span>
                     </div>
                   </router-link>
@@ -105,7 +105,7 @@
     </div>
 
   <!-- Offline Action  -->
-  <div v-if="!online" class="fixed absolute inset-0 bg-gray-900 z-50 bg-opacity-90 flex items-center justify-center">
+  <div v-if="!online" class="fixed inset-0 bg-gray-900 z-50 bg-opacity-90 flex items-center justify-center">
       <div class="text-center text-indigo-50">
         <Offline class="h-56 w-56"/>
         <h1 class="z-50 my-2">Please check your internet.</h1>

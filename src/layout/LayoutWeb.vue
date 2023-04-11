@@ -3,7 +3,7 @@
      <nav class="bg-gray-800 flex-shrink-0">
          <div class="flex justify-between max-w-7xl mx-auto px-6 md:px-4 py-4">
             <div class="font-semibold text-3xl">
-               <span class="text-indigo-400">Li</span>
+               <span class="text-indigo-400">Magic</span>
                <span class="text-indigo-50">Box</span>
             </div>
             <div class="flex items-center md:divide-x-2 space-x-3">
